@@ -1,0 +1,702 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Docker安装 | All Right</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="All Right">
+    
+
+    
+    <meta name="description" content="0x00 简介
+一个类似于虚拟机的轻量级容器
+Docker包括三个基本概念
+
+
+镜像（Image）
+容器（Container）
+仓库（Repository）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker安装">
+<meta property="og:url" content="http://spd.dropsec.xyz/2016/12/01/Docker安装/index.html">
+<meta property="og:site_name" content="All Right">
+<meta property="og:description" content="0x00 简介
+一个类似于虚拟机的轻量级容器
+Docker包括三个基本概念
+
+
+镜像（Image）
+容器（Container）
+仓库（Repository）">
+<meta property="og:image" content="http://oeiu48wqi.bkt.clouddn.com/20161211.png">
+<meta property="og:image" content="http://oeiu48wqi.bkt.clouddn.com/20161212.png">
+<meta property="og:image" content="http://oeiu48wqi.bkt.clouddn.com/20161213.png">
+<meta property="og:image" content="http://oeiu48wqi.bkt.clouddn.com/20161214.png">
+<meta property="og:image" content="http://oeiu48wqi.bkt.clouddn.com/20161215.png">
+<meta property="og:updated_time" content="2017-04-07T08:59:45.183Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Docker安装">
+<meta name="twitter:description" content="0x00 简介
+一个类似于虚拟机的轻量级容器
+Docker包括三个基本概念
+
+
+镜像（Image）
+容器（Container）
+仓库（Repository）">
+<meta name="twitter:image" content="http://oeiu48wqi.bkt.clouddn.com/20161211.png">
+<meta name="twitter:creator" content="@https://twitter.com/">
+
+    
+    <link rel="alternative" href="/atom.xml" title="All Right" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="All Right" title="All Right"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="All Right">All Right</a></h1>
+				<h2 class="blog-motto">A binary security Porter</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:spd.dropsec.xyz">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/12/01/Docker安装/" title="Docker安装" itemprop="url">Docker安装</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="All Right" target="_blank" itemprop="author">All Right</a>
+		
+  <p class="article-time">
+    <time datetime="2016-12-01T13:26:19.000Z" itemprop="datePublished"> 发表于 2016-12-01</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x00-简介"><span class="toc-number">1.</span> <span class="toc-text">0x00 简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x01-安装"><span class="toc-number">2.</span> <span class="toc-text">0x01 安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x02-Docker常用的命令"><span class="toc-number">3.</span> <span class="toc-text">0x02 Docker常用的命令</span></a></li></ol>
+		
+		</div>
+		
+		<h3 id="0x00-简介"><a href="#0x00-简介" class="headerlink" title="0x00 简介"></a>0x00 简介</h3><ol>
+<li>一个类似于虚拟机的轻量级容器</li>
+<li>Docker包括三个基本概念</li>
+</ol>
+<ul>
+<li>镜像（Image）</li>
+<li>容器（Container）</li>
+<li>仓库（Repository）</li>
+</ul>
+<a id="more"></a>
+<h3 id="0x01-安装"><a href="#0x01-安装" class="headerlink" title="0x01 安装"></a>0x01 安装</h3><p>首先需要明确Docker支持的ubuntu版本：<br>Ubuntu Trusty 14.04 (LTS) (64-bit)<br>Ubuntu Precise 12.04 (LTS) (64-bit)<br>Ubuntu Raring 13.04 and Saucy 13.10 (64 bit)<br>目前Docker仅仅支持以上三种ubuntu版本。所以在安装前需要确认ubuntu版本<br>这是我的版本：Ubuntu Trusty 14.04 (LTS) (64-bit)</p>
+<p><img src="http://oeiu48wqi.bkt.clouddn.com/20161211.png" alt=""></p>
+<p>安装<br>Sudo apt-get install –y docker.io<br>测试一下<br>Docker<br><img src="http://oeiu48wqi.bkt.clouddn.com/20161212.png" alt=""></p>
+<p>重启系统，直接测试使用官方ubuntu镜像(Sudo docker pull ubuntu)</p>
+<p>安装好之后运行hello world<br>Sudo docker run ubuntu /bin/echo hello world</p>
+<p><img src="http://oeiu48wqi.bkt.clouddn.com/20161213.png" alt=""><br>oK了，执行完以上命令后，Docker在Ubuntu上面就安装好了。当然过一段时间后，你安装的版本就不会是最新版本了。这种情况下你可以安装以下的方式进行Docker升级。</p>
+<ol>
+<li>确认/usr/lib/apt/methods/https是否存在，如果不存在，那么先安装apt-transport-https( apt-get install apt-transport-https )。</li>
+</ol>
+<p><img src="http://oeiu48wqi.bkt.clouddn.com/20161214.png" alt=""></p>
+<ol>
+<li><p>将Docker官方资料库的访问Key添加到你本地系统。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9</div></pre></td></tr></table></figure>
+</li>
+<li><p>上面一步执行成功后，就开始安装Lxc-docker包。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ sudo sh -c &quot;echo deb https://get.docker.io/ubuntu docker main\</div><div class="line">&gt; /etc/apt/sources.list.d/docker.list&quot;</div><div class="line">$ sudo apt-get update</div><div class="line">$ sudo apt-get install lxc-docker</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>经过以上几步，就安装了最新版本的docker了，我们开始执行docker.</p>
+<p><img src="http://oeiu48wqi.bkt.clouddn.com/20161215.png" alt=""></p>
+<h3 id="0x02-Docker常用的命令"><a href="#0x02-Docker常用的命令" class="headerlink" title="0x02 Docker常用的命令"></a>0x02 Docker常用的命令</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Sudo docker images：列出所有镜像（images）</div><div class="line">Sudo docker ps：列出正在运行的(容器)containers </div><div class="line">Sudo docker pull ubuntu：下载镜像 </div><div class="line">Sudo docker run -i -t ubuntu /bin/bash：运行ubuntu镜像 </div><div class="line">Sudo docker commit 3a09b2588478 ubuntu:mynewimage：提交你的变更，并且把容器保存成Tag为mynewimage的新的ubuntu镜像.(注意，这里提交只是提交到本地仓库，类似Git)</div></pre></td></tr></table></figure>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/安全工具/">安全工具</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Docker/">Docker</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://spd.dropsec.xyz/2016/12/01/Docker安装/" data-title="Docker安装 | All Right" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/12/02/ROP系统攻击思想/" title="ROP系统攻击思想">
+  <strong>上一篇：</strong><br/>
+  <span>
+  ROP系统攻击思想</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2016/11/20/优质CTF题careful/"  title="优质CTF题careful">
+ <strong>下一篇：</strong><br/> 
+ <span>优质CTF题careful
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2016/12/01/Docker安装/" data-title="Docker安装" data-url="http://spd.dropsec.xyz/2016/12/01/Docker安装/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x00-简介"><span class="toc-number">1.</span> <span class="toc-text">0x00 简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x01-安装"><span class="toc-number">2.</span> <span class="toc-text">0x01 安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x02-Docker常用的命令"><span class="toc-number">3.</span> <span class="toc-text">0x02 Docker常用的命令</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="github-card">
+<p class="asidetitle">Github 名片</p>
+<div class="github-card" data-github="myGoodLuck" data-width="220" data-height="119" data-theme="medium">
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+</div>
+  </div>
+
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Android/" title="Android">Android<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/安全工具/" title="安全工具">安全工具<sup>6</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/漏洞分析/" title="漏洞分析">漏洞分析<sup>14</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/编程技术/" title="编程技术">编程技术<sup>18</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/逆向破解/" title="逆向破解">逆向破解<sup>12</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/CTF/" title="CTF">CTF<sup>11</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Java/" title="Java">Java<sup>8</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Windows/" title="Windows">Windows<sup>6</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Python/" title="Python">Python<sup>5</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Linux/" title="Linux">Linux<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/安全工具开发/" title="安全工具开发">安全工具开发<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/C-C/" title="C/C++">C/C++<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ROP/" title="ROP">ROP<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Android逆向/" title="Android逆向">Android逆向<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Ret2reg/" title="Ret2reg">Ret2reg<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Docker/" title="Docker">Docker<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Stack-smashing-Protection/" title="Stack-smashing-Protection">Stack-smashing-Protection<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/竞争条件漏洞/" title="竞争条件漏洞">竞争条件漏洞<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/密码学/" title="密码学">密码学<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/IDA/" title="IDA">IDA<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/免杀/" title="免杀">免杀<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/X86汇编/" title="X86汇编">X86汇编<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Android-Hook/" title="Android Hook">Android Hook<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/符号执行/" title="符号执行">符号执行<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://bbs.pediy.com/" target="_blank" title="看雪论坛">看雪论坛</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.52pojie.cn/" target="_blank" title="吾爱破解">吾爱破解</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.freebuf.com/" target="_blank" title="Freebuf">Freebuf</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://bobao.360.cn/" target="_blank" title="安全客">安全客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://wobushi.cn/" target="_blank" title="Vam博客">Vam博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://www.sec-wiki.com/index.php" target="_blank" title="SecWiki">SecWiki</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://jaq.alibaba.com/community/index" target="_blank" title="阿里聚安全">阿里聚安全</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.droidsec.cn/" target="_blank" title="Android安全中文站">Android安全中文站</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.dropsec.xyz" target="_blank" title="Drops团队主页">Drops团队主页</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://139.129.36.207:8080/" target="_blank" title="Drops攻防平台">Drops攻防平台</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=null&verifier=&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m All Right. <br/>
+			I like reverse cracking and vulnerability mining.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/u/3935817858?refer_flag=1001030102_&amp;is_all=1" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/myGoodLuck" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		<a href="https://twitter.com/https://twitter.com/" target="_blank" class="icon-twitter" title="twitter"></a>
+		
+		
+		
+		
+		
+		
+		
+		<a href="mailto:spd1234@foxmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a>  © 2017 
+		
+		<a href="/about" target="_blank" title="All Right">All Right</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"hexo-next"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?19fc2bc0462099cb39127e61934055ec";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

@@ -1,0 +1,698 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>抽象类及其若干疑问 | All Right</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="All Right">
+    
+
+    
+    <meta name="description" content="定义一个抽象类例子：
+1234567891011abstract class A&amp;#123;    private String info = &amp;quot;Hello world&amp;quot;;    public void print()&amp;#123;        System.out.println(info);    &amp;#125;    public abstract void get();">
+<meta property="og:type" content="article">
+<meta property="og:title" content="抽象类及其若干疑问">
+<meta property="og:url" content="http://spd.dropsec.xyz/2016/10/10/抽象类及其若干疑问/index.html">
+<meta property="og:site_name" content="All Right">
+<meta property="og:description" content="定义一个抽象类例子：
+1234567891011abstract class A&amp;#123;    private String info = &amp;quot;Hello world&amp;quot;;    public void print()&amp;#123;        System.out.println(info);    &amp;#125;    public abstract void get();">
+<meta property="og:image" content="http://obmugrq95.bkt.clouddn.com/a9.png">
+<meta property="og:image" content="http://obmugrq95.bkt.clouddn.com/a8.png">
+<meta property="og:image" content="http://obmugrq95.bkt.clouddn.com/a1.png">
+<meta property="og:image" content="http://obmugrq95.bkt.clouddn.com/a2.png">
+<meta property="og:image" content="http://obmugrq95.bkt.clouddn.com/a3.png">
+<meta property="og:image" content="http://obmugrq95.bkt.clouddn.com/a4.png">
+<meta property="og:image" content="http://obmugrq95.bkt.clouddn.com/a5.png">
+<meta property="og:image" content="http://obmugrq95.bkt.clouddn.com/a6.png">
+<meta property="og:image" content="http://obmugrq95.bkt.clouddn.com/a7.png">
+<meta property="og:updated_time" content="2017-04-07T09:08:47.471Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="抽象类及其若干疑问">
+<meta name="twitter:description" content="定义一个抽象类例子：
+1234567891011abstract class A&amp;#123;    private String info = &amp;quot;Hello world&amp;quot;;    public void print()&amp;#123;        System.out.println(info);    &amp;#125;    public abstract void get();">
+<meta name="twitter:image" content="http://obmugrq95.bkt.clouddn.com/a9.png">
+<meta name="twitter:creator" content="@https://twitter.com/">
+
+    
+    <link rel="alternative" href="/atom.xml" title="All Right" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="All Right" title="All Right"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="All Right">All Right</a></h1>
+				<h2 class="blog-motto">A binary security Porter</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:spd.dropsec.xyz">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/10/10/抽象类及其若干疑问/" title="抽象类及其若干疑问" itemprop="url">抽象类及其若干疑问</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="All Right" target="_blank" itemprop="author">All Right</a>
+		
+  <p class="article-time">
+    <time datetime="2016-10-10T12:52:29.000Z" itemprop="datePublished"> 发表于 2016-10-10</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#定义一个抽象类"><span class="toc-number">1.</span> <span class="toc-text">定义一个抽象类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#错误的使用—直接实例化对象"><span class="toc-number">2.</span> <span class="toc-text">错误的使用—直接实例化对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#思考：为什么抽象类不能够直接new"><span class="toc-number">2.1.</span> <span class="toc-text">思考：为什么抽象类不能够直接new?</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#抽象类的使用原则："><span class="toc-number">3.</span> <span class="toc-text">抽象类的使用原则：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#抽象类的若干种疑问"><span class="toc-number">4.</span> <span class="toc-text">抽象类的若干种疑问</span></a></li></ol>
+		
+		</div>
+		
+		<h2 id="定义一个抽象类"><a href="#定义一个抽象类" class="headerlink" title="定义一个抽象类"></a>定义一个抽象类</h2><p>例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">abstract class A&#123;</div><div class="line">    private String info = &quot;Hello world&quot;;</div><div class="line">    public void print()&#123;</div><div class="line">        System.out.println(info);</div><div class="line">    &#125;</div><div class="line">    public abstract void get(); //只声明没有方法体</div><div class="line">&#125;</div><div class="line">public class Test &#123;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line"></div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>输出结果：<br><img src="http://obmugrq95.bkt.clouddn.com/a9.png" alt=""></p>
+<h2 id="错误的使用—直接实例化对象"><a href="#错误的使用—直接实例化对象" class="headerlink" title="错误的使用—直接实例化对象"></a>错误的使用—直接实例化对象</h2><p>例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public class Test &#123;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line">        A a = new A(); //A是抽象的，无法实例化</div><div class="line">		</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>输出结果：<br><img src="http://obmugrq95.bkt.clouddn.com/a8.png" alt=""></p>
+<h3 id="思考：为什么抽象类不能够直接new"><a href="#思考：为什么抽象类不能够直接new" class="headerlink" title="思考：为什么抽象类不能够直接new?"></a>思考：为什么抽象类不能够直接new?</h3><p>答：一个类的对象实例化后，可以调用类中的属性和方法，但是抽象类之中的抽象方法没有方法体，如果这样直接调用，那不就乱了吗？</p>
+<h2 id="抽象类的使用原则："><a href="#抽象类的使用原则：" class="headerlink" title="抽象类的使用原则："></a>抽象类的使用原则：</h2><ul>
+<li>抽象类必须有子类，子类用extends继承，只能有一个子类。</li>
+<li>子类（如果不是抽象类）则必须覆写抽象类之中的全部抽象方法；</li>
+<li>抽象类对象可以使用对象的向上转型方式，通过子类来进行实例化操作。</li>
+</ul>
+<p>例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">abstract class A&#123;</div><div class="line">    private String info = &quot;Hello world&quot;;</div><div class="line">    public void print()&#123;</div><div class="line">        System.out.println(info);</div><div class="line">    &#125;</div><div class="line">    public abstract void get(); //只声明没有方法体</div><div class="line">&#125;</div><div class="line">class Imp1 extends A&#123;</div><div class="line"></div><div class="line">&#125;</div><div class="line">public class Test &#123;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>输出结果：<br><img src="http://obmugrq95.bkt.clouddn.com/a1.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">abstract class A&#123;</div><div class="line">    private String info = &quot;Hello world&quot;;</div><div class="line">    public void print()&#123;</div><div class="line">        System.out.println(info);</div><div class="line">    &#125;</div><div class="line">    public abstract void get(); //只声明没有方法体</div><div class="line">&#125;</div><div class="line">class Imp1 extends A&#123;</div><div class="line">    public void get()&#123;</div><div class="line">        System.out.println(&quot;Hello MLDN&quot;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line">public class Test &#123;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line">        A a = new Imp1(); //向上转型</div><div class="line">        a.print(); //自己类定义</div><div class="line">        a.get(); //子类负责实现</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>输出结果：<br><img src="http://obmugrq95.bkt.clouddn.com/a2.png" alt=""></p>
+<p>结论：通过以上的一个程序，现在可以很清楚的发现，与之前类的继承不一样的是，抽象类的定义又出了子类必须要覆写的方法，而之前的类子类可以有选择的来决定是否需要覆写，而且可以发现，抽象类实际上就比普通类多了一些抽象方法而已，其他的定义和普通类完全一样，如果把抽象类比喻成一盘炒熟的菜，那么抽象类就是一盘半成品。</p>
+<h2 id="抽象类的若干种疑问"><a href="#抽象类的若干种疑问" class="headerlink" title="抽象类的若干种疑问"></a>抽象类的若干种疑问</h2><ol>
+<li>抽象类是否使用final定义？</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">final abstract class A&#123;</div><div class="line">    private String info = &quot;Hello world&quot;;</div><div class="line">    public void print()&#123;</div><div class="line">        System.out.println(info);</div><div class="line">    &#125;</div><div class="line">    public abstract void get(); //只声明没有方法体</div><div class="line">&#125;</div><div class="line">public class Test &#123;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line">        A a = new Imp1(); //向上转型</div><div class="line">        a.print(); //自己类定义</div><div class="line">        a.get(); //子类负责实现</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>输出结果：<br><img src="http://obmugrq95.bkt.clouddn.com/a3.png" alt=""><br>结论：不能，因为抽象类必须有子类，final定义的类不能有子类,也不能被继承；</p>
+<ol>
+<li>抽象类之中能否包含构造方法？</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">abstract class A&#123;</div><div class="line">    private String info = &quot;Hello world&quot;;</div><div class="line">    public A()&#123;</div><div class="line">        System.out.println(&quot;*****&quot;);</div><div class="line">    &#125;</div><div class="line">    public void print()&#123;</div><div class="line">        System.out.println(info);</div><div class="line">    &#125;</div><div class="line">    public abstract void get(); //只声明没有方法体</div><div class="line">&#125;</div><div class="line">class Imp1 extends A&#123;</div><div class="line">    public void get()&#123;</div><div class="line">        System.out.println(&quot;Hello MLDN&quot;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line">public class Test &#123;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line">        A a = new Imp1(); //向上转型</div><div class="line">        a.print(); //自己类定义</div><div class="line">        a.get(); //子类负责实现</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>输出结果：<br><img src="http://obmugrq95.bkt.clouddn.com/a4.png" alt=""><br>结论：可以，因为抽象类之中出了包含抽象方法之外，还包含可普通方法和属性，而属性一定要在构造方法执行完毕之后才可以进行初始化操作；</p>
+<ol>
+<li>抽象类之中能否不包含抽象方法？</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">abstract class A&#123;</div><div class="line">    private String info = &quot;Hello world&quot;;</div><div class="line">    public A()&#123;</div><div class="line">        System.out.println(&quot;*****&quot;);</div><div class="line">    &#125;</div><div class="line">    public void print()&#123;</div><div class="line">        System.out.println(info);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div><div class="line">class Imp1 extends A&#123;</div><div class="line">    public void get()&#123;</div><div class="line">        System.out.println(&quot;Hello MLDN&quot;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line">public class Test &#123;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line">        A a = new Imp1(); //向上转型</div><div class="line">        a.print(); //自己类定义</div><div class="line">      </div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>输出结果：<br><img src="http://obmugrq95.bkt.clouddn.com/a5.png" alt=""><br>结论：可以，抽象类之中可以没有抽象方法，但是反过来讲，如果有抽象方法，则一定是抽象类，即使抽象类之中没有抽象方法，也不能够被直接实例化；</p>
+<ol>
+<li>抽象类能否使用static声明？</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">static abstract class A&#123;</div><div class="line">    private String info = &quot;Hello world&quot;;</div><div class="line">    public A()&#123;</div><div class="line">        System.out.println(&quot;*****&quot;);</div><div class="line">    &#125;</div><div class="line">    public void print()&#123;</div><div class="line">        System.out.println(info);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line">class Imp1 extends A&#123;</div><div class="line">    public void get()&#123;</div><div class="line">        System.out.println(&quot;Hello MLDN&quot;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line">public class Test &#123;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line">        A a = new Imp1(); //向上转型</div><div class="line">        a.print(); //自己类定义</div><div class="line">        a.get(); //子类负责实现</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>输出结果：<br><img src="http://obmugrq95.bkt.clouddn.com/a6.png" alt=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">abstract class A&#123;</div><div class="line">    private String info = &quot;Hello world&quot;;</div><div class="line">   static abstract class B&#123; //外部类</div><div class="line">       public abstract void print();</div><div class="line">   &#125;</div><div class="line">&#125;</div><div class="line">class Imp1 extends A.B&#123;</div><div class="line">    public void print()&#123;</div><div class="line">        System.out.println(&quot;Hello MLDN&quot;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line">public class Test &#123;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line">        A.B b = new Imp1(); //向上转型</div><div class="line">        b.print();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>输出结果：<br><img src="http://obmugrq95.bkt.clouddn.com/a7.png" alt=""></p>
+<p>结论：如果定义的是外部抽象类，则不能够使用static声明，可是如果定义的是外部抽象类，那么这个内部的抽象类使用了static声明之后，就表示是一个外部的抽象类。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/编程技术/">编程技术</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java/">Java</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://spd.dropsec.xyz/2016/10/10/抽象类及其若干疑问/" data-title="抽象类及其若干疑问 | All Right" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/10/16/IDAPython脚本之收集函数的调用信息/" title="IDAPython脚本之收集函数的调用信息">
+  <strong>上一篇：</strong><br/>
+  <span>
+  IDAPython脚本之收集函数的调用信息</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2016/10/05/IDAPython安装/"  title="IDAPython安装">
+ <strong>下一篇：</strong><br/> 
+ <span>IDAPython安装
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2016/10/10/抽象类及其若干疑问/" data-title="抽象类及其若干疑问" data-url="http://spd.dropsec.xyz/2016/10/10/抽象类及其若干疑问/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#定义一个抽象类"><span class="toc-number">1.</span> <span class="toc-text">定义一个抽象类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#错误的使用—直接实例化对象"><span class="toc-number">2.</span> <span class="toc-text">错误的使用—直接实例化对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#思考：为什么抽象类不能够直接new"><span class="toc-number">2.1.</span> <span class="toc-text">思考：为什么抽象类不能够直接new?</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#抽象类的使用原则："><span class="toc-number">3.</span> <span class="toc-text">抽象类的使用原则：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#抽象类的若干种疑问"><span class="toc-number">4.</span> <span class="toc-text">抽象类的若干种疑问</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="github-card">
+<p class="asidetitle">Github 名片</p>
+<div class="github-card" data-github="myGoodLuck" data-width="220" data-height="119" data-theme="medium">
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+</div>
+  </div>
+
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Android/" title="Android">Android<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/安全工具/" title="安全工具">安全工具<sup>6</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/漏洞分析/" title="漏洞分析">漏洞分析<sup>14</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/编程技术/" title="编程技术">编程技术<sup>18</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/逆向破解/" title="逆向破解">逆向破解<sup>12</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/CTF/" title="CTF">CTF<sup>11</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Java/" title="Java">Java<sup>8</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Windows/" title="Windows">Windows<sup>6</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Python/" title="Python">Python<sup>5</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Linux/" title="Linux">Linux<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/安全工具开发/" title="安全工具开发">安全工具开发<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/C-C/" title="C/C++">C/C++<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ROP/" title="ROP">ROP<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Android逆向/" title="Android逆向">Android逆向<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Ret2reg/" title="Ret2reg">Ret2reg<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Docker/" title="Docker">Docker<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Stack-smashing-Protection/" title="Stack-smashing-Protection">Stack-smashing-Protection<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/竞争条件漏洞/" title="竞争条件漏洞">竞争条件漏洞<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/密码学/" title="密码学">密码学<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/IDA/" title="IDA">IDA<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/免杀/" title="免杀">免杀<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/X86汇编/" title="X86汇编">X86汇编<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Android-Hook/" title="Android Hook">Android Hook<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/符号执行/" title="符号执行">符号执行<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://bbs.pediy.com/" target="_blank" title="看雪论坛">看雪论坛</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.52pojie.cn/" target="_blank" title="吾爱破解">吾爱破解</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.freebuf.com/" target="_blank" title="Freebuf">Freebuf</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://bobao.360.cn/" target="_blank" title="安全客">安全客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://wobushi.cn/" target="_blank" title="Vam博客">Vam博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://www.sec-wiki.com/index.php" target="_blank" title="SecWiki">SecWiki</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://jaq.alibaba.com/community/index" target="_blank" title="阿里聚安全">阿里聚安全</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.droidsec.cn/" target="_blank" title="Android安全中文站">Android安全中文站</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.dropsec.xyz" target="_blank" title="Drops团队主页">Drops团队主页</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://139.129.36.207:8080/" target="_blank" title="Drops攻防平台">Drops攻防平台</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=null&verifier=&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m All Right. <br/>
+			I like reverse cracking and vulnerability mining.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/u/3935817858?refer_flag=1001030102_&amp;is_all=1" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/myGoodLuck" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		<a href="https://twitter.com/https://twitter.com/" target="_blank" class="icon-twitter" title="twitter"></a>
+		
+		
+		
+		
+		
+		
+		
+		<a href="mailto:spd1234@foxmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a>  © 2017 
+		
+		<a href="/about" target="_blank" title="All Right">All Right</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"hexo-next"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?19fc2bc0462099cb39127e61934055ec";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

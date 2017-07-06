@@ -1,0 +1,670 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>2016问鼎杯-6-2 | All Right</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="All Right">
+    
+
+    
+    <meta name="description" content="这道题算是这学期遇到的最经典的creackme了，很有必要仔细分析一下。它给出的是一个exe可执行文件和一份readme.text文件，首先我们看一下，它们的内容。一份readme描述了具体的问题,它也给出了半个用户名，然后提示暴力循环6分钟用i5处理器跑的话，但是到最后你会发现这明显有点扯淡，我们逆向分析出算法后给它1秒跑出来。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2016问鼎杯-6-2">
+<meta property="og:url" content="http://spd.dropsec.xyz/2016/12/05/2016问鼎杯-6-2/index.html">
+<meta property="og:site_name" content="All Right">
+<meta property="og:description" content="这道题算是这学期遇到的最经典的creackme了，很有必要仔细分析一下。它给出的是一个exe可执行文件和一份readme.text文件，首先我们看一下，它们的内容。一份readme描述了具体的问题,它也给出了半个用户名，然后提示暴力循环6分钟用i5处理器跑的话，但是到最后你会发现这明显有点扯淡，我们逆向分析出算法后给它1秒跑出来。">
+<meta property="og:image" content="http://oeiu48wqi.bkt.clouddn.com/201612180.png">
+<meta property="og:image" content="http://oeiu48wqi.bkt.clouddn.com/201612181.png">
+<meta property="og:image" content="http://oeiu48wqi.bkt.clouddn.com/201612183.png">
+<meta property="og:image" content="http://oeiu48wqi.bkt.clouddn.com/201612184.png">
+<meta property="og:image" content="http://oeiu48wqi.bkt.clouddn.com/201612185.png">
+<meta property="og:image" content="http://oeiu48wqi.bkt.clouddn.com/201612186.png">
+<meta property="og:image" content="http://oeiu48wqi.bkt.clouddn.com/201612187.png">
+<meta property="og:image" content="http://oeiu48wqi.bkt.clouddn.com/201612188.png">
+<meta property="og:image" content="http://oeiu48wqi.bkt.clouddn.com/201612189.png">
+<meta property="og:image" content="http://oeiu48wqi.bkt.clouddn.com/2016121810.png">
+<meta property="og:image" content="http://oeiu48wqi.bkt.clouddn.com/2016121811.png">
+<meta property="og:image" content="http://oeiu48wqi.bkt.clouddn.com/2016121812.png">
+<meta property="og:updated_time" content="2017-04-07T08:52:59.497Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="2016问鼎杯-6-2">
+<meta name="twitter:description" content="这道题算是这学期遇到的最经典的creackme了，很有必要仔细分析一下。它给出的是一个exe可执行文件和一份readme.text文件，首先我们看一下，它们的内容。一份readme描述了具体的问题,它也给出了半个用户名，然后提示暴力循环6分钟用i5处理器跑的话，但是到最后你会发现这明显有点扯淡，我们逆向分析出算法后给它1秒跑出来。">
+<meta name="twitter:image" content="http://oeiu48wqi.bkt.clouddn.com/201612180.png">
+<meta name="twitter:creator" content="@https://twitter.com/">
+
+    
+    <link rel="alternative" href="/atom.xml" title="All Right" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="All Right" title="All Right"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="All Right">All Right</a></h1>
+				<h2 class="blog-motto">A binary security Porter</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:spd.dropsec.xyz">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/12/05/2016问鼎杯-6-2/" title="2016问鼎杯-6-2" itemprop="url">2016问鼎杯-6-2</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="All Right" target="_blank" itemprop="author">All Right</a>
+		
+  <p class="article-time">
+    <time datetime="2016-12-05T15:43:52.000Z" itemprop="datePublished"> 发表于 2016-12-05</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			
+		
+		</div>
+		
+		<p>这道题算是这学期遇到的最经典的creackme了，很有必要仔细分析一下。它给出的是一个exe可执行文件和一份readme.text文件，首先我们看一下，它们的内容。一份readme描述了具体的问题,它也给出了半个用户名，然后提示暴力循环6分钟用i5处理器跑的话，但是到最后你会发现这明显有点扯淡，我们逆向分析出算法后给它1秒跑出来。<br><a id="more"></a><br><img src="http://oeiu48wqi.bkt.clouddn.com/201612180.png" alt=""></p>
+<p>我们再尝试一下这个exe可执行文件，输入一个错误用户名，和序列号后提示错误。<br><img src="http://oeiu48wqi.bkt.clouddn.com/201612181.png" alt=""><br>了解了这些信息后我们开始对它开刀，首先用PEID查看，发现没有加壳。扔进OD后直接查找关键字符串，下好断点，就是下图中箭头所指的位置。<br><img src="http://oeiu48wqi.bkt.clouddn.com/201612183.png" alt=""><br>然后我们run一下断在了输用户名和序列号的位置，输入错误的用户名和正确的序列号，发现它在了Sorry~这个位置，我们看到了它的函数调用线，我们沿着这条线倒跟踪上去。<br><img src="http://oeiu48wqi.bkt.clouddn.com/201612184.png" alt=""></p>
+<p>倒跟踪到函数调用线的初始位置后，我们在初始位置尽量上方的位置下一个断点，然后重新载入，回到这个断点处，我们单步跟踪。我们慢慢发现movsv eax,byte ptr ds:[esi+0x1]和movsv edx,byte ptr ds:[edx]这两条指令分别获取了我们输入的用户名的第一个字符和第二个字符，然后传入crackme.000B1F30这个函数。</p>
+<p><img src="http://oeiu48wqi.bkt.clouddn.com/201612185.png" alt=""></p>
+<p>我们进入这个函数后发现这个crackme.000B1F30就是计算serial序列号的关键函数。接下了就是对serial算法进行分析，首先这个函数把传进来的两个参数做各种运算然后生成了5个数字，具体看做的注释。</p>
+<p><img src="http://oeiu48wqi.bkt.clouddn.com/201612186.png" alt=""><br><img src="http://oeiu48wqi.bkt.clouddn.com/201612187.png" alt=""></p>
+<p>在这里我们可以看到程序已经在保存生成的数据了，而且每一个数据下面都有一个比较，如果不对就直接跳转到Sorry~。</p>
+<p><img src="http://oeiu48wqi.bkt.clouddn.com/201612188.png" alt=""><br><img src="http://oeiu48wqi.bkt.clouddn.com/201612189.png" alt=""><br>接下来我们根据serial算法的汇编代码还原出C代码。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">void decode(int forward, int back)&#123; </div><div class="line">      //int i;</div><div class="line">      int local1, local2, local3, local4, local5 = 0;//, eax, ecx, ebx;</div><div class="line">      int result[] = &#123;0&#125;;</div><div class="line">      </div><div class="line">     local3 = (forward &amp; 1) + 6 + ((back &gt;&gt; 2 ) &amp; 1);</div><div class="line">     result[0] = local3;</div><div class="line">     local4 = ((forward &gt;&gt; 3)&amp; 1)+6+((back &gt;&gt; 3) &amp; 1);</div><div class="line">     result[1] = local4;</div><div class="line">     local1 = ((forward &gt;&gt; 1) &amp; 1)+6 + ((back &gt;&gt; 4) &amp; 1);</div><div class="line">     result[2] = local1;</div><div class="line">     local2 = (back &amp; 1 )+6+((forward&gt;&gt;2)&amp;1);</div><div class="line">     result[3] = local2;</div><div class="line">     local5 = ((back &gt;&gt; 1) &amp; 1)+6+((forward &gt;&gt; 4) &amp; 1);</div><div class="line">     result[4] = local5;</div><div class="line">	</div><div class="line">     printf(&quot;%d%d%d%d%d &quot;, result[0], result[1], result[2], result[3], result[4]);</div><div class="line">  </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>根据提示，其他位的范围为26个小写字母和下划线，我们写出爆破程序。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line">#include&quot;stdafx.h&quot;</div><div class="line">#include&lt;stdio.h&gt;</div><div class="line">#include&lt;stdlib.h&gt;</div><div class="line">#include&lt;string.h&gt;</div><div class="line">#include &lt;ctype.h&gt;</div><div class="line"></div><div class="line">char result[5];</div><div class="line">void decode(int forward, int back)&#123;</div><div class="line">	</div><div class="line">	int local1, local2, local3, local4, local5 = 0;//, eax, ecx, ebx;</div><div class="line">	local3 = (forward &amp; 1) + 6 + ((back &gt;&gt; 2) &amp; 1);</div><div class="line">	itoa(local3, &amp;result[0], 10);</div><div class="line">	local4 = ((forward &gt;&gt; 3) &amp; 1) + 6 + ((back &gt;&gt; 3) &amp; 1);</div><div class="line">	itoa(local4, &amp;result[1], 10);</div><div class="line">	local1 = ((forward &gt;&gt; 1) &amp; 1) + 6 + ((back &gt;&gt; 4) &amp; 1);</div><div class="line">	itoa(local1, &amp;result[2], 10);</div><div class="line">	local2 = (back &amp; 1) + 6 + ((forward &gt;&gt; 2) &amp; 1);</div><div class="line">	itoa(local2, &amp;result[3], 10);</div><div class="line">	local5 = ((back &gt;&gt; 1) &amp; 1) + 6 + ((forward &gt;&gt; 4) &amp; 1);</div><div class="line">	itoa(local5, &amp;result[4], 10);</div><div class="line">&#125;</div><div class="line"></div><div class="line">int main()</div><div class="line">&#123;</div><div class="line"></div><div class="line">	char tag[] = &quot;abcdefghijklmnopqrstuvwxyz_&quot;;</div><div class="line">	char flag[] = &quot;&#123;hdu*b***0_&#125;&quot;;</div><div class="line"></div><div class="line">	int number[] = &#123;4, 6, 7, 8 &#125;;</div><div class="line">	char fact[6][6] = &#123; &quot;87788&quot;, &quot;66867&quot;, &quot;66777&quot;, &quot;86767&quot;&#125;;</div><div class="line">	for (int i = 0; i &lt; sizeof(number)/sizeof(number[0]); i++) &#123;</div><div class="line">		for (int j = 0; j &lt; strlen(tag); j++) &#123;</div><div class="line">			int n = number[i];</div><div class="line">			flag[n] = tag[j];</div><div class="line">			decode(flag[n-1], flag[n]);</div><div class="line">			if (strcmp(result,fact[i]) == 0) &#123;</div><div class="line">				printf(&quot;%s\n&quot;, flag);</div><div class="line">				break;</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	system(&quot;pause&quot;);</div><div class="line">	return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>跑出的结果为<code>{hdu_bav0_}</code>。</p>
+<p><img src="http://oeiu48wqi.bkt.clouddn.com/2016121810.png" alt=""></p>
+<p>我们在creakme中试一下结果正确。<br><img src="http://oeiu48wqi.bkt.clouddn.com/2016121811.png" alt=""><br>好吧，既然注册算法都有了，那我们顺便把注册机也写出来吧，这样就可以拿着玩了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line">#include&lt;stdio.h&gt;</div><div class="line">#include&lt;stdlib.h&gt;</div><div class="line">#include&lt;string.h&gt;</div><div class="line"></div><div class="line">void decode(int forward, int back)&#123; </div><div class="line">      //int i;</div><div class="line">      int local1, local2, local3, local4, local5 = 0;//, eax, ecx, ebx;</div><div class="line">      int result[] = &#123;0&#125;;</div><div class="line">      </div><div class="line">     local3 = (forward &amp; 1) + 6 + ((back &gt;&gt; 2 ) &amp; 1);</div><div class="line">     result[0] = local3;</div><div class="line">     local4 = ((forward &gt;&gt; 3)&amp; 1)+6+((back &gt;&gt; 3) &amp; 1);</div><div class="line">     result[1] = local4;</div><div class="line">     local1 = ((forward &gt;&gt; 1) &amp; 1)+6 + ((back &gt;&gt; 4) &amp; 1);</div><div class="line">     result[2] = local1;</div><div class="line">     local2 = (back &amp; 1 )+6+((forward&gt;&gt;2)&amp;1);</div><div class="line">     result[3] = local2;</div><div class="line">     local5 = ((back &gt;&gt; 1) &amp; 1)+6+((forward &gt;&gt; 4) &amp; 1);</div><div class="line">     result[4] = local5;</div><div class="line">	</div><div class="line">     printf(&quot;%d%d%d%d%d &quot;, result[0], result[1], result[2], result[3], result[4]);</div><div class="line">  </div><div class="line">&#125;</div><div class="line"></div><div class="line">int main()</div><div class="line">&#123;</div><div class="line">	char str1[12];</div><div class="line">	int len;</div><div class="line">	printf(&quot;input your username:\n&quot;);</div><div class="line">	scanf(&quot;%s&quot;,&amp;str1);</div><div class="line">	len=strlen(str1);</div><div class="line">	if(len&gt;12)</div><div class="line">	&#123;</div><div class="line">		exit(0);</div><div class="line">	&#125;</div><div class="line">	int i=0;</div><div class="line">	int forward;</div><div class="line">	int back;</div><div class="line">	 printf(&quot;serial:\n&quot;);</div><div class="line">	for(i;i&lt;len-1;i++)</div><div class="line">	&#123;</div><div class="line">		forward=str1[i];</div><div class="line">		back=str1[i+1];</div><div class="line">	    decode(forward,back);</div><div class="line">	&#125;</div><div class="line">	system(&quot;pause&quot;);</div><div class="line">	return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>测试一下,成功。想要学习的伙伴们可以在我的github中的CTF仓库中找到这个题。<br><img src="http://oeiu48wqi.bkt.clouddn.com/2016121812.png" alt=""></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/逆向破解/">逆向破解</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/CTF/">CTF</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://spd.dropsec.xyz/2016/12/05/2016问鼎杯-6-2/" data-title="2016问鼎杯-6-2 | All Right" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/12/15/Stack-smashing Protection(SSP)栈保护机制/" title="Stack-smashing Protection(SSP)栈保护机制">
+  <strong>上一篇：</strong><br/>
+  <span>
+  Stack-smashing Protection(SSP)栈保护机制</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2016/12/05/2016问鼎杯-4-1/"  title="2016问鼎杯-4-1">
+ <strong>下一篇：</strong><br/> 
+ <span>2016问鼎杯-4-1
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2016/12/05/2016问鼎杯-6-2/" data-title="2016问鼎杯-6-2" data-url="http://spd.dropsec.xyz/2016/12/05/2016问鼎杯-6-2/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ 
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="github-card">
+<p class="asidetitle">Github 名片</p>
+<div class="github-card" data-github="myGoodLuck" data-width="220" data-height="119" data-theme="medium">
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+</div>
+  </div>
+
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Android/" title="Android">Android<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/安全工具/" title="安全工具">安全工具<sup>6</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/漏洞分析/" title="漏洞分析">漏洞分析<sup>14</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/编程技术/" title="编程技术">编程技术<sup>18</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/逆向破解/" title="逆向破解">逆向破解<sup>12</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/CTF/" title="CTF">CTF<sup>11</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Java/" title="Java">Java<sup>8</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Windows/" title="Windows">Windows<sup>6</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Python/" title="Python">Python<sup>5</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Linux/" title="Linux">Linux<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/安全工具开发/" title="安全工具开发">安全工具开发<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/C-C/" title="C/C++">C/C++<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ROP/" title="ROP">ROP<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Android逆向/" title="Android逆向">Android逆向<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Ret2reg/" title="Ret2reg">Ret2reg<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Docker/" title="Docker">Docker<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Stack-smashing-Protection/" title="Stack-smashing-Protection">Stack-smashing-Protection<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/竞争条件漏洞/" title="竞争条件漏洞">竞争条件漏洞<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/密码学/" title="密码学">密码学<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/IDA/" title="IDA">IDA<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/免杀/" title="免杀">免杀<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/X86汇编/" title="X86汇编">X86汇编<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Android-Hook/" title="Android Hook">Android Hook<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/符号执行/" title="符号执行">符号执行<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://bbs.pediy.com/" target="_blank" title="看雪论坛">看雪论坛</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.52pojie.cn/" target="_blank" title="吾爱破解">吾爱破解</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.freebuf.com/" target="_blank" title="Freebuf">Freebuf</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://bobao.360.cn/" target="_blank" title="安全客">安全客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://wobushi.cn/" target="_blank" title="Vam博客">Vam博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://www.sec-wiki.com/index.php" target="_blank" title="SecWiki">SecWiki</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://jaq.alibaba.com/community/index" target="_blank" title="阿里聚安全">阿里聚安全</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.droidsec.cn/" target="_blank" title="Android安全中文站">Android安全中文站</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.dropsec.xyz" target="_blank" title="Drops团队主页">Drops团队主页</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://139.129.36.207:8080/" target="_blank" title="Drops攻防平台">Drops攻防平台</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=null&verifier=&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m All Right. <br/>
+			I like reverse cracking and vulnerability mining.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/u/3935817858?refer_flag=1001030102_&amp;is_all=1" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/myGoodLuck" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		<a href="https://twitter.com/https://twitter.com/" target="_blank" class="icon-twitter" title="twitter"></a>
+		
+		
+		
+		
+		
+		
+		
+		<a href="mailto:spd1234@foxmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a>  © 2017 
+		
+		<a href="/about" target="_blank" title="All Right">All Right</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"hexo-next"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?19fc2bc0462099cb39127e61934055ec";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

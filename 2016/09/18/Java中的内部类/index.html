@@ -1,0 +1,679 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Java中的内部类 | All Right</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="All Right">
+    
+
+    
+    <meta name="description" content="从字面意思我们就可以知道，内部类（Inner Class）就是定义在另外一个类里面的类，而包含内部类的类被称为外部类。内部类的主要作用如下：
+
+内部类提供了更好的封装，可以把内部类隐藏在外部类之内，不允许同一个包中的其他类访问；
+内部类的方法可以直接访问外部类的所有数据，包括私有的数据；
+内部类所实现的功能使用外部类同样可以实现，只是有时使用内部类更方便。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java中的内部类">
+<meta property="og:url" content="http://spd.dropsec.xyz/2016/09/18/Java中的内部类/index.html">
+<meta property="og:site_name" content="All Right">
+<meta property="og:description" content="从字面意思我们就可以知道，内部类（Inner Class）就是定义在另外一个类里面的类，而包含内部类的类被称为外部类。内部类的主要作用如下：
+
+内部类提供了更好的封装，可以把内部类隐藏在外部类之内，不允许同一个包中的其他类访问；
+内部类的方法可以直接访问外部类的所有数据，包括私有的数据；
+内部类所实现的功能使用外部类同样可以实现，只是有时使用内部类更方便。">
+<meta property="og:updated_time" content="2017-04-07T09:03:26.544Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java中的内部类">
+<meta name="twitter:description" content="从字面意思我们就可以知道，内部类（Inner Class）就是定义在另外一个类里面的类，而包含内部类的类被称为外部类。内部类的主要作用如下：
+
+内部类提供了更好的封装，可以把内部类隐藏在外部类之内，不允许同一个包中的其他类访问；
+内部类的方法可以直接访问外部类的所有数据，包括私有的数据；
+内部类所实现的功能使用外部类同样可以实现，只是有时使用内部类更方便。">
+<meta name="twitter:creator" content="@https://twitter.com/">
+
+    
+    <link rel="alternative" href="/atom.xml" title="All Right" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="All Right" title="All Right"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="All Right">All Right</a></h1>
+				<h2 class="blog-motto">A binary security Porter</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:spd.dropsec.xyz">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/09/18/Java中的内部类/" title="Java中的内部类" itemprop="url">Java中的内部类</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="All Right" target="_blank" itemprop="author">All Right</a>
+		
+  <p class="article-time">
+    <time datetime="2016-09-18T10:58:34.000Z" itemprop="datePublished"> 发表于 2016-09-18</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#成员内部类"><span class="toc-number">1.</span> <span class="toc-text">成员内部类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#静态内部类"><span class="toc-number">2.</span> <span class="toc-text">静态内部类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法内部类"><span class="toc-number">3.</span> <span class="toc-text">方法内部类</span></a></li></ol>
+		
+		</div>
+		
+		<p>从字面意思我们就可以知道，内部类（Inner Class）就是定义在另外一个类里面的类，而包含内部类的类被称为外部类。内部类的主要作用如下：</p>
+<ol>
+<li>内部类提供了更好的封装，可以把内部类隐藏在外部类之内，不允许同一个包中的其他类访问；</li>
+<li>内部类的方法可以直接访问外部类的所有数据，包括私有的数据；</li>
+<li>内部类所实现的功能使用外部类同样可以实现，只是有时使用内部类更方便。</li>
+</ol>
+<a id="more"></a>
+<h3 id="成员内部类"><a href="#成员内部类" class="headerlink" title="成员内部类"></a>成员内部类</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">package com.test;</div><div class="line"></div><div class="line">public class People &#123;</div><div class="line">    private String name = &quot;Bob&quot;;</div><div class="line">    public class Student&#123;</div><div class="line">        String ID = &quot;20161234&quot;;</div><div class="line">        public void stuInfo()&#123;</div><div class="line">            System.out.println(&quot;访问外部类的name:&quot;+name);</div><div class="line">            System.out.println(&quot;访问内部类的ID:&quot;+ID);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    public static void main(String[] args)&#123;</div><div class="line">        People a = new People();</div><div class="line">        Student b = a.new Student();</div><div class="line">        b.stuInfo();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>由此，我们可以知道，成员内部类的使用方法：</p>
+<ol>
+<li>Student类相当于People 类的一个成员变量，所以Student类可以使用任意访问修饰符；</li>
+<li>Student类在People类里，所以访问范围在类里面的所有方法均可以访问People的属性（即内部类里可以直接访问外部类的方法和属性，反之不行）</li>
+<li>定义成员内部类后，必须使用外部类来创建内部对象，即：内部类 对象名 = 外部类对象。new 内部类（）；</li>
+<li>如果外部类和内部类具有相同的成员变量和方法，内部类默认访问自己的成员变量和方法，如果要访问外部类的成员变量，可以使用this关键字。</li>
+</ol>
+<h3 id="静态内部类"><a href="#静态内部类" class="headerlink" title="静态内部类"></a>静态内部类</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">package com.test;</div><div class="line"></div><div class="line">public class People &#123;</div><div class="line">    private String name = &quot;Bob&quot;;</div><div class="line">    static String ID = &quot;2342xxxxxxx243543&quot;;</div><div class="line">    public static class Student&#123;</div><div class="line">        String ID = &quot;2016123&quot;;</div><div class="line">        public void stuInfo()&#123;</div><div class="line">            System.out.println(&quot;访问外部类中的ID：&quot;+People.ID);</div><div class="line">            System.out.println(&quot;访问内部类中的ID：&quot;+ID);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    //测试成员内部类</div><div class="line">    public static void main(String[] args)&#123;</div><div class="line">      Student b = new Student();</div><div class="line">        b.stuInfo(); //调用内部对象的suInfo方法</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>静态你内部类是static修饰的内部类，这种内部类的特点是：</p>
+<ol>
+<li>静态内部类不能直接访问外部类的静态成员函数，但可以通过new 外部类().成员 的方式访问；</li>
+<li>如果外部类的静态成员与外部类的成员名称相同，可通过 类名.静态成员 访问外部类的静态成员；如果外部类的静态成员与内部的成员名称不同，则可通过 成员名 直接调用外部类的静态成员</li>
+<li>创建静态内部类的对象时，不需要外部类的对象，可以直接创建 内部类 对象名=new 内部类();</li>
+</ol>
+<h3 id="方法内部类"><a href="#方法内部类" class="headerlink" title="方法内部类"></a>方法内部类</h3><p>方法内部类就是定义外部类的方法中的内部类，方法内部类只在该方法的内部可见，即只在该方法内可以使用。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">package com.test;</div><div class="line"></div><div class="line">public class People &#123;</div><div class="line">   public void peopleInfo()&#123;</div><div class="line">       final String sex = &quot;man&quot;;</div><div class="line">       class Student&#123;</div><div class="line">           String ID = &quot;20161234&quot;;</div><div class="line">           public void print()&#123;</div><div class="line">               System.out.println(&quot;访问外部类的方法中的常量sex:&quot;+sex);</div><div class="line">               System.out.println(&quot;访问内部类中的变量ID：&quot;+ID);</div><div class="line">           &#125;</div><div class="line">       &#125;</div><div class="line">       Student a= new Student();</div><div class="line">       a.print();</div><div class="line">   &#125;</div><div class="line">    //测试方法内部类</div><div class="line">    public static void main(String[] args)&#123;</div><div class="line">        People b = new People();</div><div class="line">        b.peopleInfo();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/编程技术/">编程技术</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java/">Java</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://spd.dropsec.xyz/2016/09/18/Java中的内部类/" data-title="Java中的内部类 | All Right" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/09/18/Java基础之13个Java例子/" title="Java基础之13个Java例子">
+  <strong>上一篇：</strong><br/>
+  <span>
+  Java基础之13个Java例子</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2016/09/03/CTF中pwn的基础小知识总结/"  title="CTF中pwn的基础小知识总结">
+ <strong>下一篇：</strong><br/> 
+ <span>CTF中pwn的基础小知识总结
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2016/09/18/Java中的内部类/" data-title="Java中的内部类" data-url="http://spd.dropsec.xyz/2016/09/18/Java中的内部类/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#成员内部类"><span class="toc-number">1.</span> <span class="toc-text">成员内部类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#静态内部类"><span class="toc-number">2.</span> <span class="toc-text">静态内部类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法内部类"><span class="toc-number">3.</span> <span class="toc-text">方法内部类</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="github-card">
+<p class="asidetitle">Github 名片</p>
+<div class="github-card" data-github="myGoodLuck" data-width="220" data-height="119" data-theme="medium">
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+</div>
+  </div>
+
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Android/" title="Android">Android<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/安全工具/" title="安全工具">安全工具<sup>6</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/漏洞分析/" title="漏洞分析">漏洞分析<sup>14</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/编程技术/" title="编程技术">编程技术<sup>18</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/逆向破解/" title="逆向破解">逆向破解<sup>12</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/CTF/" title="CTF">CTF<sup>11</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Java/" title="Java">Java<sup>8</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Windows/" title="Windows">Windows<sup>6</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Python/" title="Python">Python<sup>5</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Linux/" title="Linux">Linux<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/安全工具开发/" title="安全工具开发">安全工具开发<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/C-C/" title="C/C++">C/C++<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ROP/" title="ROP">ROP<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Android逆向/" title="Android逆向">Android逆向<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Ret2reg/" title="Ret2reg">Ret2reg<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Docker/" title="Docker">Docker<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Stack-smashing-Protection/" title="Stack-smashing-Protection">Stack-smashing-Protection<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/竞争条件漏洞/" title="竞争条件漏洞">竞争条件漏洞<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/密码学/" title="密码学">密码学<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/IDA/" title="IDA">IDA<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/免杀/" title="免杀">免杀<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/X86汇编/" title="X86汇编">X86汇编<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Android-Hook/" title="Android Hook">Android Hook<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/符号执行/" title="符号执行">符号执行<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://bbs.pediy.com/" target="_blank" title="看雪论坛">看雪论坛</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.52pojie.cn/" target="_blank" title="吾爱破解">吾爱破解</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.freebuf.com/" target="_blank" title="Freebuf">Freebuf</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://bobao.360.cn/" target="_blank" title="安全客">安全客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://wobushi.cn/" target="_blank" title="Vam博客">Vam博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://www.sec-wiki.com/index.php" target="_blank" title="SecWiki">SecWiki</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://jaq.alibaba.com/community/index" target="_blank" title="阿里聚安全">阿里聚安全</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.droidsec.cn/" target="_blank" title="Android安全中文站">Android安全中文站</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.dropsec.xyz" target="_blank" title="Drops团队主页">Drops团队主页</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://139.129.36.207:8080/" target="_blank" title="Drops攻防平台">Drops攻防平台</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=null&verifier=&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m All Right. <br/>
+			I like reverse cracking and vulnerability mining.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/u/3935817858?refer_flag=1001030102_&amp;is_all=1" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/myGoodLuck" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		<a href="https://twitter.com/https://twitter.com/" target="_blank" class="icon-twitter" title="twitter"></a>
+		
+		
+		
+		
+		
+		
+		
+		<a href="mailto:spd1234@foxmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a>  © 2017 
+		
+		<a href="/about" target="_blank" title="All Right">All Right</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"hexo-next"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?19fc2bc0462099cb39127e61934055ec";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

@@ -1,0 +1,683 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>面向对象高级（一） | All Right</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="All Right">
+    
+
+    
+    <meta name="description" content="继承的基本概念
+继承是面向对象三大特征之一。
+被继承的类称为父类（超类），继承父类的类称为子类（派生类）。
+继承是指一个对象直接使用另一个对象的属性和方法。
+通过继承可以实现代码重用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="面向对象高级（一）">
+<meta property="og:url" content="http://spd.dropsec.xyz/2016/08/13/面向对象高级（一）/index.html">
+<meta property="og:site_name" content="All Right">
+<meta property="og:description" content="继承的基本概念
+继承是面向对象三大特征之一。
+被继承的类称为父类（超类），继承父类的类称为子类（派生类）。
+继承是指一个对象直接使用另一个对象的属性和方法。
+通过继承可以实现代码重用。">
+<meta property="og:updated_time" content="2017-04-07T09:15:18.936Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="面向对象高级（一）">
+<meta name="twitter:description" content="继承的基本概念
+继承是面向对象三大特征之一。
+被继承的类称为父类（超类），继承父类的类称为子类（派生类）。
+继承是指一个对象直接使用另一个对象的属性和方法。
+通过继承可以实现代码重用。">
+<meta name="twitter:creator" content="@https://twitter.com/">
+
+    
+    <link rel="alternative" href="/atom.xml" title="All Right" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="All Right" title="All Right"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="All Right">All Right</a></h1>
+				<h2 class="blog-motto">A binary security Porter</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:spd.dropsec.xyz">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/08/13/面向对象高级（一）/" title="面向对象高级（一）" itemprop="url">面向对象高级（一）</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="All Right" target="_blank" itemprop="author">All Right</a>
+		
+  <p class="article-time">
+    <time datetime="2016-08-13T12:54:05.000Z" itemprop="datePublished"> 发表于 2016-08-13</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#继承的基本概念"><span class="toc-number">1.</span> <span class="toc-text">继承的基本概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#继承的限制"><span class="toc-number">2.</span> <span class="toc-text">继承的限制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#子类的实例化过程"><span class="toc-number">3.</span> <span class="toc-text">子类的实例化过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法的重写"><span class="toc-number">4.</span> <span class="toc-text">方法的重写</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#super关键字"><span class="toc-number">5.</span> <span class="toc-text">super关键字</span></a></li></ol>
+		
+		</div>
+		
+		<h3 id="继承的基本概念"><a href="#继承的基本概念" class="headerlink" title="继承的基本概念"></a>继承的基本概念</h3><ol>
+<li>继承是面向对象三大特征之一。</li>
+<li>被继承的类称为父类（超类），继承父类的类称为子类（派生类）。</li>
+<li>继承是指一个对象直接使用另一个对象的属性和方法。</li>
+<li>通过继承可以实现代码重用。<a id="more"></a>
+例如：<br>动物（猫，狗，鸡，猪……）<br>鸡（家鸡，野鸡）<br>鸡属于动物，鸡可以继承动物的属性和方法。家鸡属于鸡，可以继承鸡的属性和方法。当然家鸡也属于动物，也可以继承动物的属性和方法。<br>语法：<br>[访问权限] class 子类明 extends 父类名{<br>类体定义；<br>}<br>示例：<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Dog</span></span>&#123;</div><div class="line">   <span class="keyword">protected</span> String name;</div><div class="line">&#125;</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HomeDog</span> <span class="keyword">extends</span> <span class="title">Dog</span></span>&#123;</div><div class="line">   <span class="comment">//类的定义</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="继承的限制"><a href="#继承的限制" class="headerlink" title="继承的限制"></a>继承的限制</h3><ol>
+<li>Java只能实现单继承，也就是一个类只能有一个父类。</li>
+<li>允许多层继承，即：一个子类可以有一个父类，一个父类还可以有其他的父类。</li>
+<li>继承只能继承非私有的属性和方法。</li>
+<li>构造方法不能被继承。</li>
+</ol>
+<h3 id="子类的实例化过程"><a href="#子类的实例化过程" class="headerlink" title="子类的实例化过程"></a>子类的实例化过程</h3><p>在子类进行实例化操作的时候，首先会先让父类进行实例化操作。之后子类再自己进行实例化操作。<br>子类的实例化过程：</p>
+<pre><code>1. 子类实例化时会先调用父类的构造方法
+2. 如果父类中没有默认构造方法，在子类的构造方法中必须显示的调用父类的构造方法
+</code></pre><h3 id="方法的重写"><a href="#方法的重写" class="headerlink" title="方法的重写"></a>方法的重写</h3><p>在Java中，子类可继承父类中的方法，而不需要编写相同的方法。但有时子类并不想原封不动的继承父类的方法，而是想作一定的修改，这就需要采用方法的重写。方法重写又称为方法覆盖。<br>关于方法重写的一些特征：</p>
+<pre><code>1. 发生方法重写的两个方法返回值、方法名、参数列表必须完全一致（子类重写父类的方法）
+2. 子类抛出的异常不能超过父类相应方法的异常（子类异常不能大于父类异常）
+3. 子类方法的访问级别不能低于父类相应方法的访问级别（子类访问级别不能低于父类访问级别）
+</code></pre><p>注意： 方法的重载和方法的重写不是一个概念。重载发生在同一个类当中，重写发生在子类和父类两个类之间。</p>
+<h3 id="super关键字"><a href="#super关键字" class="headerlink" title="super关键字"></a>super关键字</h3><p>super 可以完成以下操作</p>
+<pre><code>1. 使用super调用父类中的属性
+2. 使用super调用父类中的方法
+3. 使用super调用父类中的构造方法
+</code></pre><p>综合示例：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test1</span></span>&#123;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">		Dog dog= <span class="keyword">new</span> Dog(<span class="string">"wangwang"</span>);</div><div class="line">		dog.print();</div><div class="line">		dog.desc();</div><div class="line">		</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//父类</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Animal</span></span>&#123;</div><div class="line">	<span class="comment">//如果属性需要子类继承，那么可以使用protected关键字声明</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Animal</span><span class="params">(String name)</span></span>&#123;</div><div class="line">		System.out.println(<span class="string">"animal"</span>);</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">protected</span> String name;</div><div class="line">	<span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">desc</span><span class="params">()</span></span>&#123;</div><div class="line">		System.out.println(<span class="string">"animal name is"</span>+name);</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//子类</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dog</span> <span class="keyword">extends</span> <span class="title">Animal</span></span>&#123;</div><div class="line">	<span class="comment">//显示的调用父类的构造方法：</span></div><div class="line">	<span class="keyword">super</span>(name); <span class="comment">//使用super关键字调用，必须在构造方法的第一行</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Dog</span><span class="params">(String name)</span></span>&#123;</div><div class="line">		System.out.println(<span class="string">"dog"</span>);</div><div class="line">		<span class="keyword">this</span>.name=name;</div><div class="line">		</div><div class="line">	&#125;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">()</span></span>&#123;</div><div class="line">		System.out.println(<span class="string">"my name is"</span>+name);</div><div class="line">	&#125;</div><div class="line">	<span class="comment">//重写父类的方法</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">desc</span><span class="params">()</span></span>&#123;</div><div class="line">		<span class="keyword">super</span>.desc(); <span class="comment">//调用父类的方法使用super</span></div><div class="line">		System.out.println(<span class="string">"dog name is"</span>+name);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/编程技术/">编程技术</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java/">Java</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://spd.dropsec.xyz/2016/08/13/面向对象高级（一）/" data-title="面向对象高级（一） | All Right" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/08/14/面向对象高级（二）/" title="面向对象高级（二）">
+  <strong>上一篇：</strong><br/>
+  <span>
+  面向对象高级（二）</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2016/08/13/增强for可变参数与代码块/"  title="增强for可变参数与代码块">
+ <strong>下一篇：</strong><br/> 
+ <span>增强for可变参数与代码块
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2016/08/13/面向对象高级（一）/" data-title="面向对象高级（一）" data-url="http://spd.dropsec.xyz/2016/08/13/面向对象高级（一）/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#继承的基本概念"><span class="toc-number">1.</span> <span class="toc-text">继承的基本概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#继承的限制"><span class="toc-number">2.</span> <span class="toc-text">继承的限制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#子类的实例化过程"><span class="toc-number">3.</span> <span class="toc-text">子类的实例化过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法的重写"><span class="toc-number">4.</span> <span class="toc-text">方法的重写</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#super关键字"><span class="toc-number">5.</span> <span class="toc-text">super关键字</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="github-card">
+<p class="asidetitle">Github 名片</p>
+<div class="github-card" data-github="myGoodLuck" data-width="220" data-height="119" data-theme="medium">
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+</div>
+  </div>
+
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Android/" title="Android">Android<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/安全工具/" title="安全工具">安全工具<sup>6</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/漏洞分析/" title="漏洞分析">漏洞分析<sup>14</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/编程技术/" title="编程技术">编程技术<sup>18</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/逆向破解/" title="逆向破解">逆向破解<sup>12</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/CTF/" title="CTF">CTF<sup>11</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Java/" title="Java">Java<sup>8</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Windows/" title="Windows">Windows<sup>6</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Python/" title="Python">Python<sup>5</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Linux/" title="Linux">Linux<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/安全工具开发/" title="安全工具开发">安全工具开发<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/C-C/" title="C/C++">C/C++<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ROP/" title="ROP">ROP<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Android逆向/" title="Android逆向">Android逆向<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Ret2reg/" title="Ret2reg">Ret2reg<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Docker/" title="Docker">Docker<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Stack-smashing-Protection/" title="Stack-smashing-Protection">Stack-smashing-Protection<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/竞争条件漏洞/" title="竞争条件漏洞">竞争条件漏洞<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/密码学/" title="密码学">密码学<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/IDA/" title="IDA">IDA<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/免杀/" title="免杀">免杀<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/X86汇编/" title="X86汇编">X86汇编<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Android-Hook/" title="Android Hook">Android Hook<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/符号执行/" title="符号执行">符号执行<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://bbs.pediy.com/" target="_blank" title="看雪论坛">看雪论坛</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.52pojie.cn/" target="_blank" title="吾爱破解">吾爱破解</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.freebuf.com/" target="_blank" title="Freebuf">Freebuf</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://bobao.360.cn/" target="_blank" title="安全客">安全客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://wobushi.cn/" target="_blank" title="Vam博客">Vam博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://www.sec-wiki.com/index.php" target="_blank" title="SecWiki">SecWiki</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://jaq.alibaba.com/community/index" target="_blank" title="阿里聚安全">阿里聚安全</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.droidsec.cn/" target="_blank" title="Android安全中文站">Android安全中文站</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.dropsec.xyz" target="_blank" title="Drops团队主页">Drops团队主页</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://139.129.36.207:8080/" target="_blank" title="Drops攻防平台">Drops攻防平台</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=null&verifier=&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m All Right. <br/>
+			I like reverse cracking and vulnerability mining.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/u/3935817858?refer_flag=1001030102_&amp;is_all=1" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/myGoodLuck" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		<a href="https://twitter.com/https://twitter.com/" target="_blank" class="icon-twitter" title="twitter"></a>
+		
+		
+		
+		
+		
+		
+		
+		<a href="mailto:spd1234@foxmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a>  © 2017 
+		
+		<a href="/about" target="_blank" title="All Right">All Right</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"hexo-next"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?19fc2bc0462099cb39127e61934055ec";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

@@ -1,0 +1,671 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>rMath-浮点运算的逆向分析 | All Right</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="All Right">
+    
+
+    
+    <meta name="description" content="思路这个题就是把输入的字符串先去掉ZCTF{}后，把括号里的字符串替换，然后进行了浮点运算，运算后的结果和0x19异或，得到的数值就是 . 7 , )  ! . ( , , ) . , ,  /">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rMath-浮点运算的逆向分析">
+<meta property="og:url" content="http://spd.dropsec.xyz/2017/03/30/rMath-浮点运算的逆向分析/index.html">
+<meta property="og:site_name" content="All Right">
+<meta property="og:description" content="思路这个题就是把输入的字符串先去掉ZCTF{}后，把括号里的字符串替换，然后进行了浮点运算，运算后的结果和0x19异或，得到的数值就是 . 7 , )  ! . ( , , ) . , ,  /">
+<meta property="og:image" content="http://oj3cgkt4g.bkt.clouddn.com/2017330-1.png">
+<meta property="og:image" content="http://oj3cgkt4g.bkt.clouddn.com/2017330-2.png">
+<meta property="og:image" content="http://oj3cgkt4g.bkt.clouddn.com/2017330-3.png">
+<meta property="og:image" content="http://oj3cgkt4g.bkt.clouddn.com/2017330-4.png">
+<meta property="og:image" content="http://oj3cgkt4g.bkt.clouddn.com/2017330-8.png">
+<meta property="og:image" content="http://oj3cgkt4g.bkt.clouddn.com/2017330-5.png">
+<meta property="og:image" content="http://oj3cgkt4g.bkt.clouddn.com/2017330-6.png">
+<meta property="og:image" content="http://oj3cgkt4g.bkt.clouddn.com/2017330-7.png">
+<meta property="og:updated_time" content="2017-04-07T09:07:25.720Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="rMath-浮点运算的逆向分析">
+<meta name="twitter:description" content="思路这个题就是把输入的字符串先去掉ZCTF{}后，把括号里的字符串替换，然后进行了浮点运算，运算后的结果和0x19异或，得到的数值就是 . 7 , )  ! . ( , , ) . , ,  /">
+<meta name="twitter:image" content="http://oj3cgkt4g.bkt.clouddn.com/2017330-1.png">
+<meta name="twitter:creator" content="@https://twitter.com/">
+
+    
+    <link rel="alternative" href="/atom.xml" title="All Right" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="All Right" title="All Right"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="All Right">All Right</a></h1>
+				<h2 class="blog-motto">A binary security Porter</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:spd.dropsec.xyz">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2017/03/30/rMath-浮点运算的逆向分析/" title="rMath-浮点运算的逆向分析" itemprop="url">rMath-浮点运算的逆向分析</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="All Right" target="_blank" itemprop="author">All Right</a>
+		
+  <p class="article-time">
+    <time datetime="2017-03-30T08:04:36.000Z" itemprop="datePublished"> 发表于 2017-03-30</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#思路"><span class="toc-number">1.</span> <span class="toc-text">思路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#具体分析"><span class="toc-number">2.</span> <span class="toc-text">具体分析</span></a></li></ol>
+		
+		</div>
+		
+		<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>这个题就是把输入的字符串先去掉ZCTF{}后，把括号里的字符串替换，然后进行了浮点运算，运算后的结果和0x19异或，得到的数值就是 . 7 , ) <em> ! . ( , , ) . , , </em> / <em> </em><br><a id="more"></a></p>
+<h3 id="具体分析"><a href="#具体分析" class="headerlink" title="具体分析"></a>具体分析</h3><p>载入IDA能看出flag格式为：</p>
+<ol>
+<li>小于36字符</li>
+<li>格式为ZCTF{}</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">signed</span> <span class="keyword">int</span> <span class="number">__u</span>sercall start@&lt;eax&gt;(<span class="keyword">int</span> a1@&lt;esi&gt;, <span class="number">_B</span>YTE *a2@&lt;ebx&gt;)</div><div class="line">&#123;</div><div class="line">  <span class="keyword">signed</span> <span class="keyword">int</span> result; <span class="comment">// eax@2</span></div><div class="line">  <span class="keyword">char</span> v3; <span class="comment">// [sp+1h] [bp-29h]@4</span></div><div class="line">  <span class="keyword">char</span> Str; <span class="comment">// [sp+2h] [bp-28h]@1</span></div><div class="line">  <span class="keyword">int</span> v5; <span class="comment">// [sp+3h] [bp-27h]@1</span></div><div class="line">  <span class="keyword">int</span> v6; <span class="comment">// [sp+7h] [bp-23h]@1</span></div><div class="line">  <span class="keyword">int</span> v7; <span class="comment">// [sp+Bh] [bp-1Fh]@1</span></div><div class="line">  <span class="keyword">int</span> v8; <span class="comment">// [sp+Fh] [bp-1Bh]@1</span></div><div class="line">  <span class="keyword">int</span> v9; <span class="comment">// [sp+13h] [bp-17h]@1</span></div><div class="line">  <span class="keyword">int</span> v10; <span class="comment">// [sp+17h] [bp-13h]@1</span></div><div class="line">  <span class="keyword">int</span> v11; <span class="comment">// [sp+1Bh] [bp-Fh]@1</span></div><div class="line">  <span class="keyword">char</span> v12; <span class="comment">// [sp+1Fh] [bp-Bh]@1</span></div><div class="line">  <span class="keyword">char</span> *v13; <span class="comment">// [sp+26h] [bp-4h]@8</span></div><div class="line"></div><div class="line">  Str = <span class="number">0</span>;</div><div class="line">  v5 = <span class="number">0</span>;</div><div class="line">  v6 = <span class="number">0</span>;</div><div class="line">  v7 = <span class="number">0</span>;</div><div class="line">  v8 = <span class="number">0</span>;</div><div class="line">  v9 = <span class="number">0</span>;</div><div class="line">  v10 = <span class="number">0</span>;</div><div class="line">  v11 = <span class="number">0</span>;</div><div class="line">  v12 = <span class="number">0</span>;</div><div class="line">  <span class="built_in">printf</span>(<span class="string">"Please input the flag : "</span>);</div><div class="line">  <span class="built_in">scanf</span>(<span class="string">"%s"</span>, &amp;Str);</div><div class="line">  <span class="keyword">if</span> ( <span class="built_in">strlen</span>(&amp;Str) &lt; <span class="number">0x1E</span> )</div><div class="line">  &#123;</div><div class="line">    <span class="keyword">if</span> ( SBYTE3(v5) == <span class="string">'&#123;'</span> &amp;&amp; *(&amp;v3 + <span class="built_in">strlen</span>(&amp;Str)) == <span class="string">'&#125;'</span> )</div><div class="line">    &#123;</div><div class="line">      *(&amp;v3 + <span class="built_in">strlen</span>(&amp;Str)) = <span class="number">0</span>;</div><div class="line">      BYTE3(v5) = <span class="number">0</span>;</div><div class="line">      <span class="keyword">if</span> ( !stricmp(&amp;Str, <span class="string">"ZCTF"</span>) )</div><div class="line">      &#123;</div><div class="line">        v13 = &amp;v6;</div><div class="line">        <span class="keyword">if</span> ( sub_E912E0(a1, a2, &amp;v6) )</div><div class="line">          <span class="built_in">printf</span>(<span class="string">"Congratulations!\n"</span>);</div><div class="line">        <span class="keyword">else</span></div><div class="line">          <span class="built_in">printf</span>(<span class="string">"Sorry! Flag error!\n"</span>);</div><div class="line">        result = <span class="number">0</span>;</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">else</span></div><div class="line">      &#123;</div><div class="line">        <span class="built_in">printf</span>(<span class="string">"Sorry! Flag error!\n"</span>);</div><div class="line">        result = <span class="number">1</span>;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span></div><div class="line">    &#123;</div><div class="line">      <span class="built_in">printf</span>(<span class="string">"Sorry! Flag error!\n"</span>);</div><div class="line">      result = <span class="number">1</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">else</span></div><div class="line">  &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Sorry! Flag error!\n"</span>);</div><div class="line">    result = <span class="number">1</span>;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">return</span> result;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>用OD进行动态调试，关键位置下好断点，来到如下位置<br><img src="http://oj3cgkt4g.bkt.clouddn.com/2017330-1.png" alt=""><br>跟到上面的位置，发现大括号里面长度为17，然后取每一字符减去0x30再查询一个偏移表，然后通过跳转表跳转到指定位置初始化一个全局变量。<br>跳转表如下：<br><img src="http://oj3cgkt4g.bkt.clouddn.com/2017330-2.png" alt=""><br>偏移表如下:<br><img src="http://oj3cgkt4g.bkt.clouddn.com/2017330-3.png" alt=""></p>
+<p>其中偏移表中填充了大量0x0B，查询到这个偏移后通过跳转表会直接跳转到函数结束的位置。这里要注意这两个表的跳转关系，输入的字符每一个减去0x30后，先和0x3F比较（偏移表的长度为0x3F,不能跑到这个表外面去），然后再加偏移表的首地址得到一个地址，里面的值就是偏移量，如果值是0，就对应分支表的第一个跳转，如果值是1就对应分支表的第二个跳转，依次类推。跳转到相对应的位置进行替换。<br>通过偏移表中对应的值的地址-偏移表起始地址+0x30反推输入与全局变量的关系如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">0 .</div><div class="line">o 0</div><div class="line">e 1</div><div class="line">T 2</div><div class="line">H 3</div><div class="line">U 4</div><div class="line">_ 5</div><div class="line">S 6</div><div class="line">8 7</div><div class="line">W 8</div><div class="line">R 9</div></pre></td></tr></table></figure></p>
+<p>当然这种对应关系看IDA会更加清楚一点</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">char</span> *<span class="number">__u</span>sercall sub_E91000@&lt;eax&gt;(<span class="keyword">int</span> a1@&lt;ebp&gt;)</div><div class="line">&#123;</div><div class="line">  <span class="keyword">size_t</span> v1; <span class="comment">// eax@1</span></div><div class="line">  <span class="keyword">char</span> *result; <span class="comment">// eax@2</span></div><div class="line"></div><div class="line">  v1 = <span class="built_in">strlen</span>(*(a1 + <span class="number">8</span>));</div><div class="line">  <span class="keyword">if</span> ( v1 == <span class="number">17</span> )</div><div class="line">  &#123;</div><div class="line">    *(a1 - <span class="number">4</span>) = <span class="number">0</span>;</div><div class="line">    *(a1 - <span class="number">5</span>) = *(*(a1 - <span class="number">4</span>) + *(a1 + <span class="number">8</span>));</div><div class="line">    <span class="keyword">while</span> ( <span class="number">2</span> )</div><div class="line">    &#123;</div><div class="line">      *(a1 - <span class="number">12</span>) = *(a1 - <span class="number">5</span>);</div><div class="line">      *(a1 - <span class="number">12</span>) -= <span class="number">0x30</span>;</div><div class="line">      <span class="keyword">switch</span> ( *(a1 - <span class="number">12</span>) )</div><div class="line">      &#123;</div><div class="line">        <span class="keyword">case</span> <span class="number">0</span>:</div><div class="line">          *(&amp;Str + *(a1 - <span class="number">4</span>)) = <span class="number">0x2E</span>;</div><div class="line">          <span class="keyword">goto</span> LABEL_19;</div><div class="line">        <span class="keyword">case</span> <span class="number">0x3F</span>:</div><div class="line">          *(&amp;Str + *(a1 - <span class="number">4</span>)) = <span class="number">0x30</span>;</div><div class="line">          <span class="keyword">goto</span> LABEL_19;</div><div class="line">        <span class="keyword">case</span> <span class="number">0x35</span>:</div><div class="line">          *(&amp;Str + *(a1 - <span class="number">4</span>)) = <span class="number">0x31</span>;</div><div class="line">          <span class="keyword">goto</span> LABEL_19;</div><div class="line">        <span class="keyword">case</span> <span class="number">0x24</span>:</div><div class="line">          *(&amp;Str + *(a1 - <span class="number">4</span>)) = <span class="number">0x32</span>;</div><div class="line">          <span class="keyword">goto</span> LABEL_19;</div><div class="line">        <span class="keyword">case</span> <span class="number">0x18</span>:</div><div class="line">          *(&amp;Str + *(a1 - <span class="number">4</span>)) = <span class="number">0x33</span>;</div><div class="line">          <span class="keyword">goto</span> LABEL_19;</div><div class="line">        <span class="keyword">case</span> <span class="number">0x25</span>:</div><div class="line">          *(&amp;Str + *(a1 - <span class="number">4</span>)) = <span class="number">0x34</span>;</div><div class="line">          <span class="keyword">goto</span> LABEL_19;</div><div class="line">        <span class="keyword">case</span> <span class="number">0x2F</span>:</div><div class="line">          *(&amp;Str + *(a1 - <span class="number">4</span>)) = <span class="number">0x35</span>;</div><div class="line">          <span class="keyword">goto</span> LABEL_19;</div><div class="line">        <span class="keyword">case</span> <span class="number">0x23</span>:</div><div class="line">          *(&amp;Str + *(a1 - <span class="number">4</span>)) = <span class="number">0x36</span>;</div><div class="line">          <span class="keyword">goto</span> LABEL_19;</div><div class="line">        <span class="keyword">case</span> <span class="number">8</span>:</div><div class="line">          *(&amp;Str + *(a1 - <span class="number">4</span>)) = <span class="number">0x37</span>;</div><div class="line">          <span class="keyword">goto</span> LABEL_19;</div><div class="line">        <span class="keyword">case</span> <span class="number">0x27</span>:</div><div class="line">          *(&amp;Str + *(a1 - <span class="number">4</span>)) = <span class="number">56</span>;</div><div class="line">          <span class="keyword">goto</span> LABEL_19;</div><div class="line">        <span class="keyword">case</span> <span class="number">0x22</span>:</div><div class="line">          *(&amp;Str + *(a1 - <span class="number">4</span>)) = <span class="number">57</span>;</div><div class="line">LABEL_19:</div><div class="line">          *(a1 - <span class="number">5</span>) = *(++*(a1 - <span class="number">4</span>) + *(a1 + <span class="number">8</span>));</div><div class="line">          <span class="keyword">if</span> ( *(a1 - <span class="number">5</span>) )</div><div class="line">            <span class="keyword">continue</span>;</div><div class="line">          result = &amp;Str;</div><div class="line">          <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">default</span>:</div><div class="line">          result = <span class="number">0</span>;</div><div class="line">          <span class="keyword">break</span>;</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">break</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">else</span></div><div class="line">  &#123;</div><div class="line">    result = <span class="number">0</span>;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">return</span> result;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>然后将这个数值在00c61323这个函数里做浮点运算<br><img src="http://oj3cgkt4g.bkt.clouddn.com/2017330-4.png" alt=""></p>
+<p>运算后的结果和0x19异或后和字符串. 7 , ) <em> ! . ( , , ) . , ,</em> / <em> </em>  进行比较,当然我们用0x19和字符串. 7 , ) <em> ! . ( , , ) . , , </em> / <em> </em> 异或后会得到正确的flag的浮点运算结果，然后逆推。<br>对应关系如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">.7,)*!.(,,).,,*/**</div><div class="line">7.5038715507553633</div></pre></td></tr></table></figure></p>
+<p>所以重点在浮点运算，我们看一下浮点运算函数的汇编代码</p>
+<p>F7跟入函数<br><img src="http://oj3cgkt4g.bkt.clouddn.com/2017330-8.png" alt=""><br><img src="http://oj3cgkt4g.bkt.clouddn.com/2017330-5.png" alt=""><br><img src="http://oj3cgkt4g.bkt.clouddn.com/2017330-6.png" alt=""><br><img src="http://oj3cgkt4g.bkt.clouddn.com/2017330-7.png" alt=""></p>
+<p>根据0xF13348处的浮点数一共算出四个结果，分析过程如上图。得到一元二次方程,我们解这个方程得到浮点运算前的数值，也就是刚开始时替换后的数值：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#!usr/bin/env python</span></div><div class="line"><span class="comment"># _*_ coding: utf-8 -*-</span></div><div class="line"><span class="keyword">from</span> sympy <span class="keyword">import</span> *</div><div class="line"></div><div class="line"><span class="string">"""</span></div><div class="line">res1 = (Str - 1.864832709999999) * (6.51951822361*Str)</div><div class="line">res2 = (Str - 5.778432978588) * (Str + 3.1415926) * 7.861418532</div><div class="line">res3 = (Str*Str - 0.8521405969999999) * (8.7356198421365 - 2.0000)</div><div class="line">res4 = (Str*Str * 4.93287651872 - Str * 9.542697368122542) * 2.681794561929999</div><div class="line">result = res1 + res2 - res3 + res4 + 60.0000</div><div class="line">"""</div><div class="line"></div><div class="line">Str = symbols(<span class="string">'Str'</span>)</div><div class="line">jie = solve([<span class="number">-7.5038715507553633</span> +(Str - <span class="number">1.864832709999999</span>) * (<span class="number">6.51951822361</span>*Str)</div><div class="line">              +(Str - <span class="number">5.778432978588</span>) * (Str + <span class="number">3.1415926</span>) * <span class="number">7.861418532</span></div><div class="line">              -(Str*Str - <span class="number">0.8521405969999999</span>) * (<span class="number">8.7356198421365</span> - <span class="number">2.0000</span>)</div><div class="line">              + (Str*Str * <span class="number">4.93287651872</span> - Str * <span class="number">9.542697368122542</span>) * <span class="number">2.681794561929999</span></div><div class="line">              + <span class="number">60.0000</span>],[Str])</div><div class="line"><span class="keyword">print</span> jie</div></pre></td></tr></table></figure></p>
+<p>结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">D:\Python27\python.exe C:/Users/Desktop/Math.py</div><div class="line">[(-1.05058442661615,), (3.85205471562591,)]</div><div class="line"></div><div class="line">Process finished with exit code 0</div></pre></td></tr></table></figure></p>
+<p>有两个解，[(-1.05058442661615,), (3.85205471562591,)]<br>上面的result，也就是7.5038715507553633是根据判断处的数据和0x19异或得到的。<br>解出来以后通过查上面的对应关系能得到FLAG。负解舍弃，保留正解3.85205471562591，但由于精度不够，最后一位字符没有对照，但完全可以猜出来，就是那17个字符8  ， H   ， R   ， S  ，  T  ，  U  ，  W  ，  _  ， e ，  o ，  0 中的一个。最后flag为ZCTF{H0W_To_U8e_ST_Re8}</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/逆向破解/">逆向破解</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/CTF/">CTF</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://spd.dropsec.xyz/2017/03/30/rMath-浮点运算的逆向分析/" data-title="rMath-浮点运算的逆向分析 | All Right" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2017/04/04/PlaidCTF2013-ropasaurusrex/" title="PlaidCTF2013-ropasaurusrex">
+  <strong>上一篇：</strong><br/>
+  <span>
+  PlaidCTF2013-ropasaurusrex</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2017/03/19/函数名称的hash值计算方法以及其代码实现/"  title="函数名称的hash值计算方法以及其代码实现">
+ <strong>下一篇：</strong><br/> 
+ <span>函数名称的hash值计算方法以及其代码实现
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2017/03/30/rMath-浮点运算的逆向分析/" data-title="rMath-浮点运算的逆向分析" data-url="http://spd.dropsec.xyz/2017/03/30/rMath-浮点运算的逆向分析/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#思路"><span class="toc-number">1.</span> <span class="toc-text">思路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#具体分析"><span class="toc-number">2.</span> <span class="toc-text">具体分析</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="github-card">
+<p class="asidetitle">Github 名片</p>
+<div class="github-card" data-github="myGoodLuck" data-width="220" data-height="119" data-theme="medium">
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+</div>
+  </div>
+
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Android/" title="Android">Android<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/安全工具/" title="安全工具">安全工具<sup>6</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/漏洞分析/" title="漏洞分析">漏洞分析<sup>14</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/编程技术/" title="编程技术">编程技术<sup>18</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/逆向破解/" title="逆向破解">逆向破解<sup>12</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/CTF/" title="CTF">CTF<sup>11</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Java/" title="Java">Java<sup>8</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Windows/" title="Windows">Windows<sup>6</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Python/" title="Python">Python<sup>5</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Linux/" title="Linux">Linux<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/安全工具开发/" title="安全工具开发">安全工具开发<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/C-C/" title="C/C++">C/C++<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ROP/" title="ROP">ROP<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Android逆向/" title="Android逆向">Android逆向<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Ret2reg/" title="Ret2reg">Ret2reg<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Docker/" title="Docker">Docker<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Stack-smashing-Protection/" title="Stack-smashing-Protection">Stack-smashing-Protection<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/竞争条件漏洞/" title="竞争条件漏洞">竞争条件漏洞<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/密码学/" title="密码学">密码学<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/IDA/" title="IDA">IDA<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/免杀/" title="免杀">免杀<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/X86汇编/" title="X86汇编">X86汇编<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Android-Hook/" title="Android Hook">Android Hook<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/符号执行/" title="符号执行">符号执行<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://bbs.pediy.com/" target="_blank" title="看雪论坛">看雪论坛</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.52pojie.cn/" target="_blank" title="吾爱破解">吾爱破解</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.freebuf.com/" target="_blank" title="Freebuf">Freebuf</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://bobao.360.cn/" target="_blank" title="安全客">安全客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://wobushi.cn/" target="_blank" title="Vam博客">Vam博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://www.sec-wiki.com/index.php" target="_blank" title="SecWiki">SecWiki</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://jaq.alibaba.com/community/index" target="_blank" title="阿里聚安全">阿里聚安全</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.droidsec.cn/" target="_blank" title="Android安全中文站">Android安全中文站</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.dropsec.xyz" target="_blank" title="Drops团队主页">Drops团队主页</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://139.129.36.207:8080/" target="_blank" title="Drops攻防平台">Drops攻防平台</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=null&verifier=&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m All Right. <br/>
+			I like reverse cracking and vulnerability mining.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/u/3935817858?refer_flag=1001030102_&amp;is_all=1" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/myGoodLuck" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		<a href="https://twitter.com/https://twitter.com/" target="_blank" class="icon-twitter" title="twitter"></a>
+		
+		
+		
+		
+		
+		
+		
+		<a href="mailto:spd1234@foxmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a>  © 2017 
+		
+		<a href="/about" target="_blank" title="All Right">All Right</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"hexo-next"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?19fc2bc0462099cb39127e61934055ec";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

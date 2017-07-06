@@ -1,0 +1,708 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>纽约客网站文章爬取与统计 | All Right</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="All Right">
+    
+
+    
+    <meta name="description" content="内容介绍
+用scrapy框架编写爬虫，爬取纽约客网站文章，包括文章url、文章标题、作者及发表时间、文章正文、图片等。
+将上述爬取到的信息保存到mysql数据库中。
+将数据库中的文章进行分页展示。
+统计每篇文章正文的单词总数、段落总数、句子总数、词汇总数，并计算平均单词长度（单词字母数）、平均句子长度（句子单词数）、平均段落长度（段落句子数）。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="纽约客网站文章爬取与统计">
+<meta property="og:url" content="http://spd.dropsec.xyz/2017/07/01/纽约客网站文章爬取与统计/index.html">
+<meta property="og:site_name" content="All Right">
+<meta property="og:description" content="内容介绍
+用scrapy框架编写爬虫，爬取纽约客网站文章，包括文章url、文章标题、作者及发表时间、文章正文、图片等。
+将上述爬取到的信息保存到mysql数据库中。
+将数据库中的文章进行分页展示。
+统计每篇文章正文的单词总数、段落总数、句子总数、词汇总数，并计算平均单词长度（单词字母数）、平均句子长度（句子单词数）、平均段落长度（段落句子数）。">
+<meta property="og:image" content="http://oj3cgkt4g.bkt.clouddn.com/2017-7-1-1.png">
+<meta property="og:image" content="http://oj3cgkt4g.bkt.clouddn.com/2017-7-1-2.png">
+<meta property="og:image" content="http://oj3cgkt4g.bkt.clouddn.com/2017-7-1-3.png">
+<meta property="og:image" content="http://oj3cgkt4g.bkt.clouddn.com/2017-7-1-4.png">
+<meta property="og:image" content="http://oj3cgkt4g.bkt.clouddn.com/2017-7-1-5-1.png">
+<meta property="og:image" content="http://oj3cgkt4g.bkt.clouddn.com/2017-7-1-7.png">
+<meta property="og:image" content="http://oj3cgkt4g.bkt.clouddn.com/2017-7-1-6-1.png">
+<meta property="og:updated_time" content="2017-07-06T02:18:02.985Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="纽约客网站文章爬取与统计">
+<meta name="twitter:description" content="内容介绍
+用scrapy框架编写爬虫，爬取纽约客网站文章，包括文章url、文章标题、作者及发表时间、文章正文、图片等。
+将上述爬取到的信息保存到mysql数据库中。
+将数据库中的文章进行分页展示。
+统计每篇文章正文的单词总数、段落总数、句子总数、词汇总数，并计算平均单词长度（单词字母数）、平均句子长度（句子单词数）、平均段落长度（段落句子数）。">
+<meta name="twitter:image" content="http://oj3cgkt4g.bkt.clouddn.com/2017-7-1-1.png">
+<meta name="twitter:creator" content="@https://twitter.com/">
+
+    
+    <link rel="alternative" href="/atom.xml" title="All Right" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="All Right" title="All Right"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="All Right">All Right</a></h1>
+				<h2 class="blog-motto">A binary security Porter</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:spd.dropsec.xyz">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2017/07/01/纽约客网站文章爬取与统计/" title="纽约客网站文章爬取与统计" itemprop="url">纽约客网站文章爬取与统计</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="All Right" target="_blank" itemprop="author">All Right</a>
+		
+  <p class="article-time">
+    <time datetime="2017-07-01T03:33:45.000Z" itemprop="datePublished"> 发表于 2017-07-01</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#内容介绍"><span class="toc-number">1.</span> <span class="toc-text">内容介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#开发环境配置"><span class="toc-number">2.</span> <span class="toc-text">开发环境配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#开发过程"><span class="toc-number">3.</span> <span class="toc-text">开发过程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#数据爬取过程的实现"><span class="toc-number">3.1.</span> <span class="toc-text">数据爬取过程的实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#数据展示"><span class="toc-number">3.2.</span> <span class="toc-text">数据展示</span></a></li></ol></li></ol>
+		
+		</div>
+		
+		<h3 id="内容介绍"><a href="#内容介绍" class="headerlink" title="内容介绍"></a>内容介绍</h3><ol>
+<li>用scrapy框架编写爬虫，爬取纽约客网站文章，包括文章url、文章标题、作者及发表时间、文章正文、图片等。</li>
+<li>将上述爬取到的信息保存到mysql数据库中。</li>
+<li>将数据库中的文章进行分页展示。</li>
+<li>统计每篇文章正文的单词总数、段落总数、句子总数、词汇总数，并计算平均单词长度（单词字母数）、平均句子长度（句子单词数）、平均段落长度（段落句子数）。<a id="more"></a>
+</li>
+</ol>
+<h3 id="开发环境配置"><a href="#开发环境配置" class="headerlink" title="开发环境配置"></a>开发环境配置</h3><p>Python2.7</p>
+<p>Pycharm2016.2.3</p>
+<p>Windows7 64位</p>
+<p>Python2.7环境配置</p>
+<ul>
+<li>打开<a href="https://www.python.org/downloads/release/python-2712/页面，下载Windows" target="_blank" rel="external">https://www.python.org/downloads/release/python-2712/页面，下载Windows</a> x86-64 MSI installer 进行安装，安装完成后，配置环境变量。</li>
+<li>测试python是否安装成功，如果python成功安装并且配置好环境变量，那么在cmd中输入python，就能得到python版本的详细信息（如32位或64位)。</li>
+</ul>
+<p><img src="http://oj3cgkt4g.bkt.clouddn.com/2017-7-1-1.png" alt=""></p>
+<p>Pycharm安装</p>
+<p>先在官网上下载<a href="http://www.jetbrains.com/pycharm/download/" target="_blank" rel="external">http://www.jetbrains.com/pycharm/download/</a><br>下载后进行安装</p>
+<p>scrapy框架的安装</p>
+<p>Scrapy安装过程中需要很多依赖项，lxml,pyin32,twisted,pyOpenSSL,zope.inerface等等，而这些依赖在安装过程中很容易出错，最好的办法就是下载最新的python2.7。在cmd命令行下执行pip install scrapy 进行安装，安装成功后在cmd中输入scrapy。结果如下：<br><img src="http://oj3cgkt4g.bkt.clouddn.com/2017-7-1-2.png" alt=""></p>
+<p>我们cmd执行$ Python进入python控制台</p>
+<ul>
+<li>执行import lxml，如果没报错，则说明lxml安装成功.</li>
+<li>执行import twisted，如果没报错，则说明twisted安装成功.</li>
+<li>执行import OpenSSL，如果没报错，则说明OpenSSL安装成功.</li>
+<li>执行import zope.interface，如果没报错，则说明zope.interface安装成功.</li>
+</ul>
+<p><img src="http://oj3cgkt4g.bkt.clouddn.com/2017-7-1-3.png" alt=""></p>
+<p>Flask框架安装</p>
+<ul>
+<li>在D盘中创建myvir文件(任意文件)，打开cmd进入这个目录</li>
+<li>安装虚拟环境，pip install virtualenv 进行安装</li>
+<li>安装Flask,pip install Flask进行安装</li>
+</ul>
+<h3 id="开发过程"><a href="#开发过程" class="headerlink" title="开发过程"></a>开发过程</h3><h4 id="数据爬取过程的实现"><a href="#数据爬取过程的实现" class="headerlink" title="数据爬取过程的实现"></a>数据爬取过程的实现</h4><p>进入cmd ,用scrapy stratproject newyorker 命令创建一个命名为newyorker的项目。创建scrapy项目后会形成如下目录<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">newyorker/</div><div class="line">   scrapy.cfg</div><div class="line">   newyorker/</div><div class="line">       __init__.py</div><div class="line">       items.py</div><div class="line">       pipelines.py</div><div class="line">       settings.py</div><div class="line">       spiders/</div><div class="line">           __init__.py</div><div class="line">           ...</div></pre></td></tr></table></figure></p>
+<p>这些文件分别是：<br>scrapy.cfg: 项目的配置文件</p>
+<p>newyorker/: 该项目的python模块。之后将在此加入代码。</p>
+<p>newyorker/items.py: 项目中的item文件.</p>
+<p>newyorker/pipelines.py: 项目中的pipelines文件.</p>
+<p>newyorker/settings.py: 项目的设置文件.</p>
+<p>newyoker/spiders/: 放置spider代码的目录.</p>
+<p>我们在newyorker中创建new_spider.py文件，在此文件中我们编写爬取网站文章，和统计文章的关键代码，new_spider.py的内容如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># -*- coding:utf-8 -*-</span></div><div class="line"><span class="keyword">import</span> re</div><div class="line"><span class="keyword">import</span> requests</div><div class="line"><span class="keyword">from</span> scrapy.http <span class="keyword">import</span> Request</div><div class="line"><span class="keyword">from</span> scrapy.spiders <span class="keyword">import</span> CrawlSpider</div><div class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span>  BeautifulSoup</div><div class="line"><span class="keyword">from</span> scrapy.selector <span class="keyword">import</span> Selector</div><div class="line"><span class="keyword">from</span> newyorker.items <span class="keyword">import</span> NewyorkerItem</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">newyorker</span><span class="params">(CrawlSpider)</span>:</span></div><div class="line">    name = <span class="string">"newyorker"</span></div><div class="line">    allowed_domains = [<span class="string">"newyorker.com"</span>]</div><div class="line">    start_urls = [<span class="string">'http://www.newyorker.com/news/daily-comment/'</span>]</div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">parse</span><span class="params">(self, response)</span>:</span></div><div class="line">         sel = Selector(response)</div><div class="line">         infos = sel.xpath(<span class="string">"//main/div/ul/li"</span>)</div><div class="line"></div><div class="line">         <span class="keyword">for</span> info <span class="keyword">in</span> infos:</div><div class="line">             article_url_part = info.xpath(<span class="string">"div/h4/a/@href"</span>).extract()[<span class="number">0</span>]</div><div class="line">             article_url = <span class="string">'http://www.newyorker.com/'</span>+article_url_part</div><div class="line">             <span class="keyword">yield</span> Request(article_url,meta=&#123;<span class="string">'article_url'</span>:article_url&#125;,callback=self.parse_item)</div><div class="line"></div><div class="line"></div><div class="line">         urls = [<span class="string">'http://www.newyorker.com/news/daily-comment/page/&#123;&#125;'</span>.format(str(i)) <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>,<span class="number">10</span>)]</div><div class="line">         <span class="keyword">for</span> url <span class="keyword">in</span> urls:</div><div class="line">                 <span class="keyword">yield</span> Request(url,callback=self.parse)</div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">parse_item</span><span class="params">(self,response)</span>:</span></div><div class="line">        item = NewyorkerItem()</div><div class="line"></div><div class="line">        item[<span class="string">'article_url'</span>] = response.meta[<span class="string">'article_url'</span>]</div><div class="line">        data =requests.get(response.meta[<span class="string">'article_url'</span>])</div><div class="line"></div><div class="line">        sel =Selector(response)</div><div class="line">        title = sel.xpath(<span class="string">"//h1/text()"</span>).extract()[<span class="number">0</span>]</div><div class="line">        author = sel.xpath(<span class="string">"//div/div/div[2]/p/a/text()"</span>).extract()[<span class="number">0</span>]</div><div class="line">        time = sel.xpath(<span class="string">"//hgroup/div[2]/p/text()"</span>).extract()[<span class="number">0</span>]</div><div class="line">       </div><div class="line"></div><div class="line">        soup=BeautifulSoup(data.text,<span class="string">'lxml'</span>)</div><div class="line">        image_urls = soup.select(<span class="string">'figure &gt; div &gt; picture &gt; img'</span>)[<span class="number">0</span>].get(<span class="string">'srcset'</span>)<span class="keyword">if</span> soup.find_all(<span class="string">'picture'</span>,<span class="string">'component-responsive-image'</span>)  <span class="keyword">else</span> <span class="keyword">None</span></div><div class="line">        articles=soup.select(<span class="string">'#articleBody p'</span>)</div><div class="line">        article = [i.text +<span class="string">'&lt;br /&gt;'</span> <span class="keyword">for</span> i <span class="keyword">in</span> articles]</div><div class="line">        article_process = str(article).replace(<span class="string">"', '"</span>,<span class="string">" "</span>).strip(<span class="string">"['"</span>).strip(<span class="string">"']"</span>).strip(<span class="string">" ?"</span>).replace(<span class="string">'\\xa0'</span>,<span class="string">''</span>)</div><div class="line">        w_sum = len(re.findall(<span class="string">'[a-zA-Z]+'</span>, article_process))</div><div class="line">        s_sum = len(re.findall(<span class="string">'([.!?].\s?[A-Z"（])'</span>, article_process))</div><div class="line">        p_sum = len(article)</div><div class="line">        v_sum = len(set(re.findall(<span class="string">'[a-zA-Z]+'</span>, article_process.lower())))</div><div class="line">        a_sum = len(re.findall(<span class="string">'[a-zA-Z]'</span>, article_process))</div><div class="line">        avg_w = round(a_sum / w_sum, <span class="number">2</span>)</div><div class="line">        avg_s = round(w_sum / s_sum, <span class="number">2</span>)</div><div class="line">        avg_p = round(s_sum / p_sum, <span class="number">2</span>)</div><div class="line"></div><div class="line">        item[<span class="string">'title'</span>]=title     <span class="comment">#标题</span></div><div class="line">        item[<span class="string">'author'</span>]=author   <span class="comment">#作者</span></div><div class="line">        item[<span class="string">'time'</span>]=time        <span class="comment">#时间</span></div><div class="line">        item[<span class="string">'article'</span>]=article_process  <span class="comment">#正文</span></div><div class="line">        item[<span class="string">'image_urls'</span>]= image_urls   <span class="comment">#图片</span></div><div class="line">        item[<span class="string">'w_sum'</span>]=w_sum         <span class="comment">#单词</span></div><div class="line">        item[<span class="string">'s_sum'</span>]=s_sum         <span class="comment">#句子</span></div><div class="line">        item[<span class="string">'p_sum'</span>]=p_sum         <span class="comment">#段落</span></div><div class="line">        item[<span class="string">'v_sum'</span>]=v_sum         <span class="comment">#词汇</span></div><div class="line">        item[<span class="string">'a_sum'</span>]=a_sum         <span class="comment">#字母</span></div><div class="line">        item[<span class="string">'avg_w'</span>]=avg_w <span class="comment">#平均单词长度</span></div><div class="line">        item[<span class="string">'avg_s'</span>]=avg_s <span class="comment">#平均句子长度</span></div><div class="line">        item[<span class="string">'avg_p'</span>]=avg_p <span class="comment">#平均段落长度</span></div><div class="line">        <span class="keyword">yield</span> item</div></pre></td></tr></table></figure></p>
+<p>另外我们还需要连接数据库，当然在连接mysql数据库前，要确认是否安装了Python连接mysql数据库的驱动pymysql。连接数据库的代码写在pipelines.py文件中。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># -*- coding: utf-8 -*-</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> pymysql</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">dbHandle</span><span class="params">()</span>:</span></div><div class="line">    conn = pymysql.connect(</div><div class="line">        host = <span class="string">"localhost"</span>,</div><div class="line">        user = <span class="string">"root"</span>,</div><div class="line">        passwd = <span class="string">"root"</span>,</div><div class="line">        db=<span class="string">"text"</span>,</div><div class="line">        port =<span class="number">3306</span>,</div><div class="line">        charset = <span class="string">"utf8"</span>,</div><div class="line">        use_unicode = <span class="keyword">False</span></div><div class="line">    )</div><div class="line">    <span class="keyword">return</span> conn</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">newyorkerPipeline</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_item</span><span class="params">(self,item,spider)</span>:</span></div><div class="line">        dbObject = dbHandle()</div><div class="line">        cursor = dbObject.cursor()</div><div class="line">        cursor.execute(<span class="string">"USE text"</span>)</div><div class="line">        sql = <span class="string">"INSERT INTO newtext(title,author,time,article,image_urls,w_sum,s_sum,p_sum,v_sum,a_sum,avg_w,avg_s,avg_p) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"</span></div><div class="line">        <span class="keyword">try</span>:</div><div class="line">            cursor.execute(sql, (item[<span class="string">'title'</span>], item[<span class="string">'author'</span>], item[<span class="string">'time'</span>], item[<span class="string">'article'</span>],item[<span class="string">'image_urls'</span>],item[<span class="string">'w_sum'</span>],item[<span class="string">'s_sum'</span>],item[<span class="string">'p_sum'</span>],item[<span class="string">'v_sum'</span>],item[<span class="string">'a_sum'</span>],item[<span class="string">'avg_w'</span>],item[<span class="string">'avg_s'</span>],item[<span class="string">'avg_p'</span>]))</div><div class="line">            cursor.connection.commit()</div><div class="line">        <span class="keyword">except</span> BaseException <span class="keyword">as</span> e:</div><div class="line">            <span class="keyword">print</span> e</div><div class="line">            dbObject.rollback()</div><div class="line">         </div><div class="line">        <span class="keyword">return</span> item</div></pre></td></tr></table></figure>
+<p>我们用命令scrapy crawl newyorker启动这个项目，结果如下：<br><img src="http://oj3cgkt4g.bkt.clouddn.com/2017-7-1-4.png" alt=""><br>我们打开数据库，发现数据库中已经存入了我们所要的数据，并完成了统计，当然在此之前要在数据库中建好数据库和表。<br><img src="http://oj3cgkt4g.bkt.clouddn.com/2017-7-1-5-1.png" alt=""></p>
+<h4 id="数据展示"><a href="#数据展示" class="headerlink" title="数据展示"></a>数据展示</h4><p>我们创建一个Flask项目，项目结构如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">D:.</div><div class="line">├─.idea</div><div class="line">│  └─dictionaries</div><div class="line">├─static</div><div class="line">│   └─web.css</div><div class="line">├─templates</div><div class="line">│    └─base.html</div><div class="line">│    └─index.html</div><div class="line">├─app.cfg</div><div class="line">└─app.py</div></pre></td></tr></table></figure></p>
+<p>app.py中的代码如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#!/usr/bin/env python</span></div><div class="line"><span class="comment"># -*- coding: utf-8 -*-</span></div><div class="line"></div><div class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> unicode_literals</div><div class="line"><span class="keyword">import</span> pymysql</div><div class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, render_template, g, current_app</div><div class="line"><span class="keyword">from</span> flask_paginate <span class="keyword">import</span> Pagination, get_page_args</div><div class="line"><span class="keyword">import</span> click</div><div class="line"></div><div class="line">click.disable_unicode_literals_warning = <span class="keyword">True</span></div><div class="line"></div><div class="line">app = Flask(__name__)</div><div class="line">app.config.from_pyfile(<span class="string">'app.cfg'</span>)</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">@app.before_request</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">before_request</span><span class="params">()</span>:</span></div><div class="line">	g.conn = pymysql.connect(</div><div class="line">        host = <span class="string">"localhost"</span>,</div><div class="line">        user = <span class="string">"root"</span>,</div><div class="line">        passwd = <span class="string">"root"</span>,</div><div class="line">        db=<span class="string">"text"</span>,</div><div class="line">        port =<span class="number">3306</span>,</div><div class="line">        charset = <span class="string">"utf8"</span>,</div><div class="line">        use_unicode = <span class="keyword">False</span></div><div class="line">    )</div><div class="line">	g.cur = g.conn.cursor()</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">@app.teardown_request</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">teardown</span><span class="params">(error)</span>:</span></div><div class="line">    <span class="keyword">if</span> hasattr(g, <span class="string">'conn'</span>):</div><div class="line">        g.conn.close()</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">@app.route('/')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">()</span>:</span></div><div class="line">    g.cur.execute(<span class="string">'select count(*) from newtext'</span>)</div><div class="line">    user = g.cur.fetchone()[<span class="number">0</span>]</div><div class="line">    page, per_page, offset = get_page_args(page_parameter=<span class="string">'page'</span>,</div><div class="line">                                           per_page_parameter=<span class="string">'per_page'</span>)</div><div class="line">    sql = <span class="string">'select title from newtext order by title limit &#123;&#125;, &#123;&#125;'</span>\</div><div class="line">          .format(offset, per_page)</div><div class="line">    g.cur.execute(sql)</div><div class="line">    users = g.cur.fetchall()</div><div class="line">    <span class="keyword">print</span> <span class="string">"------sss"</span>, users</div><div class="line">    pagination = get_pagination(page=page,</div><div class="line">                                per_page=per_page,</div><div class="line">                                total=<span class="number">100</span>,</div><div class="line">                                record_name=<span class="string">'users'</span>,</div><div class="line">                                format_total=<span class="keyword">True</span>,</div><div class="line">                                format_number=<span class="keyword">True</span>,</div><div class="line">                                )</div><div class="line">    <span class="keyword">return</span> render_template(<span class="string">'index.html'</span>, users=users,</div><div class="line">                           page=page,</div><div class="line">                           per_page=per_page,</div><div class="line">                           pagination=pagination,</div><div class="line">                           )</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">@app.route('/users/', defaults=&#123;'page': 1&#125;)</span></div><div class="line"><span class="meta">@app.route('/users', defaults=&#123;'page': 1&#125;)</span></div><div class="line"><span class="meta">@app.route('/users/page/&lt;int:page&gt;/')</span></div><div class="line"><span class="meta">@app.route('/users/page/&lt;int:page&gt;')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">users</span><span class="params">(page)</span>:</span></div><div class="line">    g.cur.execute(<span class="string">'select count(*) from newtext'</span>)</div><div class="line">    total = g.cur.fetchone()[<span class="number">0</span>]</div><div class="line">    page, per_page, offset = get_page_args()</div><div class="line">    sql = <span class="string">'select title from newtext order by title limit &#123;&#125;, &#123;&#125;'</span>\</div><div class="line">        .format(offset, per_page)</div><div class="line">    g.cur.execute(sql)</div><div class="line">    users = g.cur.fetchall()</div><div class="line">    pagination = get_pagination(page=page,</div><div class="line">                                per_page=per_page,</div><div class="line">                                total=total,</div><div class="line">                                record_name=<span class="string">'users'</span>,</div><div class="line">                                format_total=<span class="keyword">True</span>,</div><div class="line">                                format_number=<span class="keyword">True</span>,</div><div class="line">                                )</div><div class="line">    <span class="keyword">return</span> render_template(<span class="string">'index.html'</span>, users=users,</div><div class="line">                           page=page,</div><div class="line">                           per_page=per_page,</div><div class="line">                           pagination=pagination,</div><div class="line">                           active_url=<span class="string">'users-page-url'</span>,</div><div class="line">                           )</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">@app.route('/search/&lt;name&gt;/')</span></div><div class="line"><span class="meta">@app.route('/search/&lt;name&gt;')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">search</span><span class="params">(name)</span>:</span></div><div class="line">    <span class="string">"""The function is used to test multi values url."""</span></div><div class="line">    sql = <span class="string">'select count(*) from newtext where title like ?'</span></div><div class="line">    <span class="comment">#sql = 'select title from newtext'</span></div><div class="line">    args = (<span class="string">'%&#123;&#125;%'</span>.format(title), )</div><div class="line">    g.cur.execute(sql)</div><div class="line">    total = g.cur.fetchone()[<span class="number">0</span>]</div><div class="line">  </div><div class="line">    page, per_page, offset = get_page_args()</div><div class="line">   <span class="comment"># sql = 'select * from articals where name like ? limit &#123;&#125;, &#123;&#125;'</span></div><div class="line">    <span class="comment">#g.cur.execute(sql.format(offset, per_page), args)</span></div><div class="line">    users = g.cur.fetchall()</div><div class="line">    pagination = get_pagination(page=page,</div><div class="line">                                per_page=per_page,</div><div class="line">                                total=total,</div><div class="line">                                record_name=users,</div><div class="line">                                )</div><div class="line">    <span class="keyword">return</span> render_template(<span class="string">'index.html'</span>, users=users,</div><div class="line">                           page=page,</div><div class="line">                           per_page=per_page,</div><div class="line">                           pagination=pagination,</div><div class="line">                           )</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_css_framework</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">return</span> current_app.config.get(<span class="string">'CSS_FRAMEWORK'</span>, <span class="string">'bootstrap3'</span>)</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_link_size</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">return</span> current_app.config.get(<span class="string">'LINK_SIZE'</span>, <span class="string">'sm'</span>)</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">show_single_page_or_not</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">return</span> current_app.config.get(<span class="string">'SHOW_SINGLE_PAGE'</span>, <span class="keyword">False</span>)</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_pagination</span><span class="params">(**kwargs)</span>:</span></div><div class="line">    kwargs.setdefault(<span class="string">'record_name'</span>, <span class="string">'records'</span>)</div><div class="line">    <span class="keyword">return</span> Pagination(css_framework=get_css_framework(),</div><div class="line">                      link_size=get_link_size(),</div><div class="line">                      show_single_page=show_single_page_or_not(),</div><div class="line">                      **kwargs</div><div class="line">                      )</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">@click.command()</span></div><div class="line"><span class="meta">@click.option('--port', '-p', default=5000, help='listening port')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(port)</span>:</span></div><div class="line">    app.run(debug=<span class="keyword">True</span>, port=port)</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    run()</div></pre></td></tr></table></figure></p>
+<p>我们run这个项目，然后在浏览器中输入127.0.0.1：5000即可，结果如下:</p>
+<p><img src="http://oj3cgkt4g.bkt.clouddn.com/2017-7-1-7.png" alt=""></p>
+<p>我们发现这个web程序已经成功读取到了mysql数据库中的数据并做好了分页。</p>
+<p><img src="http://oj3cgkt4g.bkt.clouddn.com/2017-7-1-6-1.png" alt=""></p>
+<p>这个项目的源码在我的github中，<a href="https://github.com/myGoodLuck/Python" target="_blank" rel="external">链接</a></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/编程技术/">编程技术</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Python/">Python</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://spd.dropsec.xyz/2017/07/01/纽约客网站文章爬取与统计/" data-title="纽约客网站文章爬取与统计 | All Right" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2017/05/24/DDCTF-逆向部分writeup/"  title="DDCTF-逆向部分writeup">
+ <strong>下一篇：</strong><br/> 
+ <span>DDCTF-逆向部分writeup
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2017/07/01/纽约客网站文章爬取与统计/" data-title="纽约客网站文章爬取与统计" data-url="http://spd.dropsec.xyz/2017/07/01/纽约客网站文章爬取与统计/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#内容介绍"><span class="toc-number">1.</span> <span class="toc-text">内容介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#开发环境配置"><span class="toc-number">2.</span> <span class="toc-text">开发环境配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#开发过程"><span class="toc-number">3.</span> <span class="toc-text">开发过程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#数据爬取过程的实现"><span class="toc-number">3.1.</span> <span class="toc-text">数据爬取过程的实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#数据展示"><span class="toc-number">3.2.</span> <span class="toc-text">数据展示</span></a></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="github-card">
+<p class="asidetitle">Github 名片</p>
+<div class="github-card" data-github="myGoodLuck" data-width="220" data-height="119" data-theme="medium">
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+</div>
+  </div>
+
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Android/" title="Android">Android<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/安全工具/" title="安全工具">安全工具<sup>6</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/漏洞分析/" title="漏洞分析">漏洞分析<sup>14</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/编程技术/" title="编程技术">编程技术<sup>18</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/逆向破解/" title="逆向破解">逆向破解<sup>12</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/CTF/" title="CTF">CTF<sup>11</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Java/" title="Java">Java<sup>8</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Windows/" title="Windows">Windows<sup>6</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Python/" title="Python">Python<sup>5</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Linux/" title="Linux">Linux<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/安全工具开发/" title="安全工具开发">安全工具开发<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/C-C/" title="C/C++">C/C++<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ROP/" title="ROP">ROP<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Android逆向/" title="Android逆向">Android逆向<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Ret2reg/" title="Ret2reg">Ret2reg<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Docker/" title="Docker">Docker<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Stack-smashing-Protection/" title="Stack-smashing-Protection">Stack-smashing-Protection<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/竞争条件漏洞/" title="竞争条件漏洞">竞争条件漏洞<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/密码学/" title="密码学">密码学<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/IDA/" title="IDA">IDA<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/免杀/" title="免杀">免杀<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/X86汇编/" title="X86汇编">X86汇编<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Android-Hook/" title="Android Hook">Android Hook<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/符号执行/" title="符号执行">符号执行<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://bbs.pediy.com/" target="_blank" title="看雪论坛">看雪论坛</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.52pojie.cn/" target="_blank" title="吾爱破解">吾爱破解</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.freebuf.com/" target="_blank" title="Freebuf">Freebuf</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://bobao.360.cn/" target="_blank" title="安全客">安全客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://wobushi.cn/" target="_blank" title="Vam博客">Vam博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://www.sec-wiki.com/index.php" target="_blank" title="SecWiki">SecWiki</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://jaq.alibaba.com/community/index" target="_blank" title="阿里聚安全">阿里聚安全</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.droidsec.cn/" target="_blank" title="Android安全中文站">Android安全中文站</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.dropsec.xyz" target="_blank" title="Drops团队主页">Drops团队主页</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://139.129.36.207:8080/" target="_blank" title="Drops攻防平台">Drops攻防平台</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=null&verifier=&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m All Right. <br/>
+			I like reverse cracking and vulnerability mining.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/u/3935817858?refer_flag=1001030102_&amp;is_all=1" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/myGoodLuck" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		<a href="https://twitter.com/https://twitter.com/" target="_blank" class="icon-twitter" title="twitter"></a>
+		
+		
+		
+		
+		
+		
+		
+		<a href="mailto:spd1234@foxmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a>  © 2017 
+		
+		<a href="/about" target="_blank" title="All Right">All Right</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"hexo-next"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?19fc2bc0462099cb39127e61934055ec";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

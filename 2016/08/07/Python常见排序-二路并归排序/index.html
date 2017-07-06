@@ -1,0 +1,645 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Python常见排序-二路并归排序 | All Right</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="All Right">
+    
+
+    
+    <meta name="description" content="描述二路并归排序的基本思路是这样的，它会将数据进行两两分组，每组之间进行排序，每小组排序完成后，再将这些有序的小组与有序的小组间进行合并排序，直到最后合并完。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python常见排序-二路并归排序">
+<meta property="og:url" content="http://spd.dropsec.xyz/2016/08/07/Python常见排序-二路并归排序/index.html">
+<meta property="og:site_name" content="All Right">
+<meta property="og:description" content="描述二路并归排序的基本思路是这样的，它会将数据进行两两分组，每组之间进行排序，每小组排序完成后，再将这些有序的小组与有序的小组间进行合并排序，直到最后合并完。">
+<meta property="og:updated_time" content="2017-04-07T09:05:47.345Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python常见排序-二路并归排序">
+<meta name="twitter:description" content="描述二路并归排序的基本思路是这样的，它会将数据进行两两分组，每组之间进行排序，每小组排序完成后，再将这些有序的小组与有序的小组间进行合并排序，直到最后合并完。">
+<meta name="twitter:creator" content="@https://twitter.com/">
+
+    
+    <link rel="alternative" href="/atom.xml" title="All Right" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="All Right" title="All Right"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="All Right">All Right</a></h1>
+				<h2 class="blog-motto">A binary security Porter</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:spd.dropsec.xyz">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/08/07/Python常见排序-二路并归排序/" title="Python常见排序-二路并归排序" itemprop="url">Python常见排序-二路并归排序</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="All Right" target="_blank" itemprop="author">All Right</a>
+		
+  <p class="article-time">
+    <time datetime="2016-08-07T07:46:59.000Z" itemprop="datePublished"> 发表于 2016-08-07</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#描述"><span class="toc-number">1.</span> <span class="toc-text">描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#算法实现"><span class="toc-number">2.</span> <span class="toc-text">算法实现</span></a></li></ol>
+		
+		</div>
+		
+		<h3 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h3><p>二路并归排序的基本思路是这样的，它会将数据进行两两分组，每组之间进行排序，每小组排序完成后，再将这些有序的小组与有序的小组间进行合并排序，直到最后合并完。<br><a id="more"></a></p>
+<h3 id="算法实现"><a href="#算法实现" class="headerlink" title="算法实现"></a>算法实现</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">gb</span><span class="params">(arr)</span>:</span> <span class="comment"># 第一次并归排序，以及持续调用rg()函数进行后续的并归排序</span></div><div class="line">    arr_t=[[arr[<span class="number">0</span>]]] <span class="comment"># 把传进去的数组的元素变为数组的形式，因为后续需要使用到</span></div><div class="line">    k=<span class="number">0</span></div><div class="line">    m=<span class="string">""</span></div><div class="line">    <span class="keyword">if</span> len(arr)%<span class="number">2</span>==<span class="number">0</span>: <span class="comment"># 如果原数组长度为偶数，那么l的值为均分</span></div><div class="line">        l=len(arr)/<span class="number">2</span></div><div class="line">    <span class="keyword">else</span>:             <span class="comment"># ······为奇数，那么l的值为均值</span></div><div class="line">        l=len(arr)/<span class="number">2</span>+<span class="number">1</span></div><div class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> range(<span class="number">0</span>,<span class="number">1</span>):</div><div class="line">        m=<span class="string">"h"</span>+m</div><div class="line">    arr_rg=list(m)    <span class="comment"># 生成一个存储数据的列表arr_rg,此列表长度为l</span></div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>,len(arr)):</div><div class="line">        arr_t=arr_t+[[arr[i]]] <span class="comment"># 生成一个列表，该列表将原列表的元素变成列表，及两层列表</span></div><div class="line">                               <span class="comment"># 因为我们要调用后面的rg函数，该函数的数据类型为列表</span></div><div class="line"></div><div class="line">    <span class="keyword">if</span> len(arr_t)%<span class="number">2</span>==<span class="number">0</span>:        <span class="comment"># 进行第一次并归排序，首先进行元素个数为偶数的情况</span></div><div class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,len(arr_t),<span class="number">2</span>): <span class="comment"># 从第0个元素开始，每次增加2</span></div><div class="line">            arr_rg[k]=dg(arr_t[i],arr_t[i+<span class="number">1</span>]) <span class="comment"># 第1位与第i+1位进行排列</span></div><div class="line">            K+=<span class="number">1</span></div><div class="line">    <span class="keyword">else</span>:                      <span class="comment"># 若元素个数为奇数</span></div><div class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,len(arr_t)<span class="number">-2</span>,<span class="number">2</span>): <span class="comment"># 循环部分先进行偶数位数部分的排序，跟%2==2情况一样</span></div><div class="line">            arr_rg[k]=dg(arr_t[i],arr_t[i+<span class="number">1</span>]) </div><div class="line">            k+=<span class="number">1</span></div><div class="line">        arr_rg[k]=arr_t[len(arr_t)<span class="number">-1</span>] <span class="comment"># 偶数部分排完后，单出一位奇数位，直接将奇数位移到新存储数组arr_rg最后一位即可</span></div><div class="line">    n=<span class="number">0</span></div><div class="line">    <span class="keyword">while</span> <span class="number">1</span>:</div><div class="line">        <span class="keyword">if</span> len(arr_rg)==<span class="number">1</span>: <span class="comment"># 长度为1的时候，不需要归并了，此时停止</span></div><div class="line">            <span class="keyword">break</span></div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            arr_rg(arr_rg) <span class="comment"># 否则调用arr_rg函数，调用的参数第一次是上述第一次并归的结果</span></div><div class="line">                           <span class="comment"># 第二次以及以后的参数是每一次的上一次arr_rg函数的执行结果</span></div><div class="line">    <span class="keyword">return</span> arr_rg</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">rg</span><span class="params">(arr_rg)</span>:</span> <span class="comment"># 依次对arr_rg进行二路归并</span></div><div class="line">    k=<span class="number">0</span></div><div class="line">    s=len(arr_rg[<span class="number">0</span>]) <span class="comment"># s代表每组元素的个数，len(arr_rg)代表一共有多少组，l代表要比较多少次</span></div><div class="line">    l=len(arr_rg) <span class="comment"># 代表一共有多少组</span></div><div class="line">    <span class="keyword">if</span> len(arr_rg)%<span class="number">2</span>==<span class="number">0</span>: <span class="comment"># 如果组的个数为偶数</span></div><div class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,len(arr_rg,<span class="number">2</span>)):</div><div class="line">            arr_rg[k]=gd(arr_rg[i],arr_rg[i+<span class="number">1</span>]) <span class="comment"># 将两个有序列表arr_rg[i],arr_rg[i+1]用dg函数合并为一个有序列表</span></div><div class="line">            k+=<span class="number">1</span>        <span class="comment"># k为排列后的数组arr_rg的下标</span></div><div class="line">        arr_rg=arr_rg[:l/<span class="number">2</span>]: <span class="comment"># 因为arr_rg由二合一，会产生多余元素，将多余的元素舍去</span></div><div class="line">        <span class="keyword">return</span> arr_rg</div><div class="line">    <span class="keyword">else</span>:                    <span class="comment"># 如果组的个数为奇数</span></div><div class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,len(arr_rg)<span class="number">-2</span>,<span class="number">2</span>):</div><div class="line">            arr_rg[k]=dg(arr_rg[i],arr_rg[i+<span class="number">1</span>])</div><div class="line">            k+=<span class="number">1</span></div><div class="line">        arr_rg=arr_rg[:l/<span class="number">2</span>]+[arr_rg[len(arr_rg)<span class="number">-1</span>]] <span class="comment"># 上面用循环排完之后，最后还需要将最后一个奇数位放下来</span></div><div class="line">        <span class="keyword">return</span> arr_rg</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">dg</span><span class="params">(arr1,arr2)</span>:</span> <span class="comment"># 两个有序数列之间的排序</span></div><div class="line">    x=len（arr1)   <span class="comment"># x为有序列表arr1的长度</span></div><div class="line">    y=len(arr2)    <span class="comment">#y为有序列表arr2的长度</span></div><div class="line">    i=<span class="number">0</span></div><div class="line">    j=<span class="number">0</span></div><div class="line">    k=<span class="number">0</span></div><div class="line">    m=<span class="string">""</span></div><div class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> range(<span class="number">0</span>,x+y):</div><div class="line">        m=<span class="string">"h"</span>+m</div><div class="line">    arr_ok=list(m) <span class="comment">#生成一个列表，列表的长度为arr1和arr2的长度之和，因为合并之后长度加大</span></div><div class="line">    <span class="keyword">while</span> k&lt;=x+y:  <span class="comment"># 合并规律，K是一个计数器，从0开始，一直到遍历完整个长度为止</span></div><div class="line">        <span class="keyword">if</span> i==x:   <span class="comment"># 临界情况，如果左边的指针已到头，如何办？</span></div><div class="line">            <span class="keyword">for</span> k <span class="keyword">in</span> range(j,k):</div><div class="line">                arr_ok[k+x]=arr2[k] <span class="comment"># 如果左边指针已到头，将右边的数据移动到最后即可</span></div><div class="line">            <span class="keyword">return</span> arr_ok</div><div class="line">            <span class="keyword">break</span></div><div class="line">        <span class="keyword">elif</span> j=y: <span class="comment"># 临界情况，如果右边的指针已到头，如何办？</span></div><div class="line">            <span class="keyword">for</span> k <span class="keyword">in</span> range(i,x):</div><div class="line">                arr_ok[k+y]=arr1[k] <span class="comment"># 如果右边的指针已到头，把左边剩下的数据移到最后即可</span></div><div class="line">            <span class="keyword">return</span> arr_ok</div><div class="line">            <span class="keyword">break</span></div><div class="line">        <span class="keyword">if</span> arr1[i]&lt;=arr2[j]:</div><div class="line">        </div><div class="line">            <span class="keyword">if</span> i==x:</div><div class="line">                arr_ok[k]=arr[i]</div><div class="line">                k+=<span class="number">1</span></div><div class="line">            <span class="keyword">else</span>:</div><div class="line">                arr_ok[k]=arr1[i]</div><div class="line">                i=i+<span class="number">1</span></div><div class="line">                k+=<span class="number">1</span></div><div class="line">            <span class="keyword">else</span>:</div><div class="line">                <span class="keyword">if</span> j==y:</div><div class="line">                    arr_ok[k]=arr[j]</div><div class="line">                    k+=<span class="number">1</span></div><div class="line">                <span class="keyword">else</span>:</div><div class="line">                    arr_ok[k]=arr2[j]</div><div class="line">                    j=j+<span class="number">1</span></div><div class="line">                    k+=<span class="number">1</span></div><div class="line">           <span class="comment">#return arr_ok</span></div></pre></td></tr></table></figure>  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/编程技术/">编程技术</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Python/">Python</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://spd.dropsec.xyz/2016/08/07/Python常见排序-二路并归排序/" data-title="Python常见排序-二路并归排序 | All Right" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/08/08/寄存器与其用途总结/" title="寄存器与其用途总结">
+  <strong>上一篇：</strong><br/>
+  <span>
+  寄存器与其用途总结</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2016/08/07/Python常见算法-选择排序/"  title="Python常见算法-选择排序">
+ <strong>下一篇：</strong><br/> 
+ <span>Python常见算法-选择排序
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2016/08/07/Python常见排序-二路并归排序/" data-title="Python常见排序-二路并归排序" data-url="http://spd.dropsec.xyz/2016/08/07/Python常见排序-二路并归排序/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#描述"><span class="toc-number">1.</span> <span class="toc-text">描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#算法实现"><span class="toc-number">2.</span> <span class="toc-text">算法实现</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="github-card">
+<p class="asidetitle">Github 名片</p>
+<div class="github-card" data-github="myGoodLuck" data-width="220" data-height="119" data-theme="medium">
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+</div>
+  </div>
+
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Android/" title="Android">Android<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/安全工具/" title="安全工具">安全工具<sup>6</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/漏洞分析/" title="漏洞分析">漏洞分析<sup>14</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/编程技术/" title="编程技术">编程技术<sup>18</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/逆向破解/" title="逆向破解">逆向破解<sup>12</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/CTF/" title="CTF">CTF<sup>11</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Java/" title="Java">Java<sup>8</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Windows/" title="Windows">Windows<sup>6</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Python/" title="Python">Python<sup>5</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Linux/" title="Linux">Linux<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/安全工具开发/" title="安全工具开发">安全工具开发<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/C-C/" title="C/C++">C/C++<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ROP/" title="ROP">ROP<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Android逆向/" title="Android逆向">Android逆向<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Ret2reg/" title="Ret2reg">Ret2reg<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Docker/" title="Docker">Docker<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Stack-smashing-Protection/" title="Stack-smashing-Protection">Stack-smashing-Protection<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/竞争条件漏洞/" title="竞争条件漏洞">竞争条件漏洞<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/密码学/" title="密码学">密码学<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/IDA/" title="IDA">IDA<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/免杀/" title="免杀">免杀<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/X86汇编/" title="X86汇编">X86汇编<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Android-Hook/" title="Android Hook">Android Hook<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/符号执行/" title="符号执行">符号执行<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://bbs.pediy.com/" target="_blank" title="看雪论坛">看雪论坛</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.52pojie.cn/" target="_blank" title="吾爱破解">吾爱破解</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.freebuf.com/" target="_blank" title="Freebuf">Freebuf</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://bobao.360.cn/" target="_blank" title="安全客">安全客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://wobushi.cn/" target="_blank" title="Vam博客">Vam博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://www.sec-wiki.com/index.php" target="_blank" title="SecWiki">SecWiki</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://jaq.alibaba.com/community/index" target="_blank" title="阿里聚安全">阿里聚安全</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.droidsec.cn/" target="_blank" title="Android安全中文站">Android安全中文站</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.dropsec.xyz" target="_blank" title="Drops团队主页">Drops团队主页</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://139.129.36.207:8080/" target="_blank" title="Drops攻防平台">Drops攻防平台</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=null&verifier=&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m All Right. <br/>
+			I like reverse cracking and vulnerability mining.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/u/3935817858?refer_flag=1001030102_&amp;is_all=1" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/myGoodLuck" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		<a href="https://twitter.com/https://twitter.com/" target="_blank" class="icon-twitter" title="twitter"></a>
+		
+		
+		
+		
+		
+		
+		
+		<a href="mailto:spd1234@foxmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a>  © 2017 
+		
+		<a href="/about" target="_blank" title="All Right">All Right</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"hexo-next"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?19fc2bc0462099cb39127e61934055ec";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

@@ -1,0 +1,668 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Linux系统可执行文件格式ELF | All Right</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="All Right">
+    
+
+    
+    <meta name="description" content="在Linux系统使用过程中，我们经常会看到elf32-i386、ELF 64-bit LSB等字样。那么究竟ELF是什么呢？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux系统可执行文件格式ELF">
+<meta property="og:url" content="http://spd.dropsec.xyz/2016/08/09/Linux系统可执行文件格式ELF/index.html">
+<meta property="og:site_name" content="All Right">
+<meta property="og:description" content="在Linux系统使用过程中，我们经常会看到elf32-i386、ELF 64-bit LSB等字样。那么究竟ELF是什么呢？">
+<meta property="og:image" content="http://www.itcast.cn/files/image/201512/20151228165911520.png">
+<meta property="og:image" content="http://www.itcast.cn/files/image/201512/20151228165947699.png">
+<meta property="og:image" content="http://www.itcast.cn/files/image/201512/20151228170204339.png">
+<meta property="og:image" content="http://www.itcast.cn/files/image/201512/20151228170222227.png">
+<meta property="og:image" content="http://www.itcast.cn/files/image/201512/20151228170245683.png">
+<meta property="og:image" content="http://www.itcast.cn/files/image/201512/20151228170308574.png">
+<meta property="og:image" content="http://www.itcast.cn/files/image/201512/20151228170346983.png">
+<meta property="og:image" content="http://www.itcast.cn/files/image/201512/20151228170405912.png">
+<meta property="og:image" content="http://www.itcast.cn/files/image/201512/20151228170428447.png">
+<meta property="og:image" content="http://www.itcast.cn/files/image/201512/20151228170442032.png">
+<meta property="og:image" content="http://www.itcast.cn/files/image/201512/20151228170509501.png">
+<meta property="og:updated_time" content="2017-04-07T09:04:24.766Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux系统可执行文件格式ELF">
+<meta name="twitter:description" content="在Linux系统使用过程中，我们经常会看到elf32-i386、ELF 64-bit LSB等字样。那么究竟ELF是什么呢？">
+<meta name="twitter:image" content="http://www.itcast.cn/files/image/201512/20151228165911520.png">
+<meta name="twitter:creator" content="@https://twitter.com/">
+
+    
+    <link rel="alternative" href="/atom.xml" title="All Right" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="All Right" title="All Right"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="All Right">All Right</a></h1>
+				<h2 class="blog-motto">A binary security Porter</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:spd.dropsec.xyz">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/08/09/Linux系统可执行文件格式ELF/" title="Linux系统可执行文件格式ELF" itemprop="url">Linux系统可执行文件格式ELF</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="All Right" target="_blank" itemprop="author">All Right</a>
+		
+  <p class="article-time">
+    <time datetime="2016-08-09T08:37:11.000Z" itemprop="datePublished"> 发表于 2016-08-09</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			
+		
+		</div>
+		
+		<p>在Linux系统使用过程中，我们经常会看到elf32-i386、ELF 64-bit LSB等字样。那么究竟ELF是什么呢？<br><a id="more"></a><br>当我们使用gcc编译工具编译c程序会得到一个二进制的文件，想当然的使用vim编辑工具将其打开，结果看到如下内容：<br><img src="http://www.itcast.cn/files/image/201512/20151228165911520.png" alt=""><br>当然了，大部分同学不会这样做。数据是以二进制形式存储的，而vi只是一个文本编辑工具。那么数据究竟是怎样存储，以什么样的格式存储成二进制文件呢？是一个一个挨着排吗？从左向右，还是从右向左？这就需要我们深入了解下ELF文件了。</p>
+<pre><code>     ELF文件格式是一个开放标准，各种UNIX系统的可执行文件都采用ELF格式，它有三种不同的类型：
+</code></pre><p>可重定位的目标文件（Relocatable，或者Object File）<br>可执行文件（Executable）<br>共享库（Shared Object，或者Shared Library）<br>从我们最不畏惧的hello world入手吧。<br><img src="http://www.itcast.cn/files/image/201512/20151228165947699.png" alt=""><br>很常见的，当我们gcc hello.c -o hello 编译这个c源程序的时候就得到了一个ELF格式的文件。可以使用file命令来查看。数据显示，该文件是一个64位的，小尾端存储的，可执行文件。<br><img src="http://www.itcast.cn/files/image/201512/20151228170204339.png" alt=""><br>而当我们使用gcc -c hello.c -o hello.o编译生成的则是一个可重定位的目标文件，也可以使用file命令来查看它。<br><img src="http://www.itcast.cn/files/image/201512/20151228170222227.png" alt=""><br>同样，我们也得到了一个ELF格式的文件。但是两者略有不同，前者是Executable可执行文件，而后者是可重定位的Relocatable。如果你感兴趣也可以试试共享库文件，其格式依然是ELF，或许会是这样ELF 32-bit LSB  shared object。</p>
+<p>那么ELF文件内部是怎样存储数据的呢？当然不能再使用vi啦，我们可以使用readelf工具来查看下，以目标文件hello.o为例：readelf -a hello.o</p>
+<p>输出结果大致可分为四个部分：ELF Header(ELF头)、Section Headers(节头表)、Relocation section(重定位节)、Symbol table(符号表)，我们依次来看。</p>
+<p>第一部分，ELF Header描述整个ELF文件的数据存储概况，如操作系统是UNIX，体系结构是Advanced Micro Devices X86-64，数据存储是二进制补码，小尾端法存储，类型是可重定位文件，Section Header Table中有13个Section Header，从文件地址304开始，每个Section Header占64字节，这个目标文件没有程序头(Program Header)。<br><img src="http://www.itcast.cn/files/image/201512/20151228170245683.png" alt=""><br>第二部分，挨着ELF头的数据信息是Section Headers(节头表)，顾名思义，它由一定数量的Section Header组成，可从中读出各个Section的描述信息，其中不乏我们编写的C程序源码、全局变量、常量等数据的存储位置。.text Section、.data Section、bss Section、.rodata Section都与我们的程序直接相关，而其它Section是汇编器自动添加的。 Address 是这些Section加载到内存中的地址（当然，程序中的地址都是虚拟地址），加载地址要在链接时填写，现在空缺，由于目标文件尚未做链接操作，所以是全0。 Offset 和 Size 列指出了各Section的起始文件地址和长度。比如 .data 段从文件地址0x55开始，一共0个字节，因为测试的程序中没有定义全局变量，只使用printf函数打印了“hello world…\n”所以后面的 .rodata Section大小为0xf也就是15个字节。<br><img src="http://www.itcast.cn/files/image/201512/20151228170308574.png" alt=""><br> 我们知道，C语言的全局变量如果在代码中没有初始化，就会在程序加载时用0初始化。这种数据属于 .bss ，在加载时它和 .data一样都是可读可写的数据，但是在ELF文件中 .data中若有数据则需要占用一部分空间保存初始值，而 .bss却不需要。也就是说，.bss在文件中只占一个Section Header而没有对应的Section，程序加载时 .bss 占多大内存空间在Section Header中描述。在我们这个例子中没有用到 .bss ，因此size也是0。</p>
+<p> 特别指出的是，.shstrtab 和 .strtab 这两个Section中存放的都是ASCII码，因此，在本文起始使用vi打开的ELF文件，如果仔细看，是能够看到字符串的，而并非通篇皆是“^@”等怪异字符。.shstrtab的全称应该是“Section Header String Table”用来保存各个Section的名字。.strtab Section保存程序中用到的符号的名字，每个名字都是以 ‘\0’ 结尾的字符串。</p>
+<p> 第三部分，可重定位节。该内容主要针对链接器设定，旨在告诉链接器指令中的哪些地方需要做重定位。当链接器完成链接工作后会自动将该Section删除。<br><img src="http://www.itcast.cn/files/image/201512/20151228170346983.png" alt=""><br> 第四部分，.symtab 是符号表。 我们在编写程序时定义的变量、函数都是符号，main就是符号的典型代表。当然为了保证程序能正常的编译、加载执行，编译器还帮助我们加入了其他许多必要的符号。这些符号都在.symtab中有所体现。<br><img src="http://www.itcast.cn/files/image/201512/20151228170405912.png" alt=""><br>Ndx 列是每个符号所在的Section编号，各Section的编号在Section Header Table中有列出。 Value 列是每个符号所代表的地址，在目标文件中，符号地址都是相对于该符号所在Section的相对地址，如定义全局变量var，那么该符号在.symtab中的Value则是相对于.data Section开头的位置。 main 位于 .text 段的开头，所以地址也是0。但是上例中所有的Value都是0不易看出差异，所以我们适当的修改下我们的测试程序，添加一个初始化为非0的全局变量var和一个函数func。<br> <img src="http://www.itcast.cn/files/image/201512/20151228170428447.png" alt=""></p>
+<p>这时.data Section的Size已经不再为0了，因为我们定义了全局变量var，它是一个int类型的变量，存储于.data Section上，因此 .data Section的Size应该是4，请大家自己验证吧。<br>我们继续来看.symtab的变化。由于加入了两个符号var和func，所以 .symtab表的成员多了两个。var是全局变量，存储于.data Section中，编号在Ndx中指出，为3，由于只有这一个全局变量，所以var在的Value为0，相对于 .data Section开头的位置；符号main发生了变化，main是函数名，保存于.text Section中，编号为1，但其Value却不再是0，由于程序中还有另外一个符号func，所以符号main的Value由原来的0变为15，依然是相对于.text Section 起始位置而言。<br><img src="http://www.itcast.cn/files/image/201512/20151228170442032.png" alt=""><br>但请大家注意，Symbol table ‘.symtab’ 中Value记录的是符号对应的值的位置。var是一个变量，值是数据位于.data中，func和main是函数，对应的值是函数入口地址(或者说函数首行指令的地址)，位于.text中。而“var”、“func”、“main”这些符号名本身存在哪里呢？其实这个问题我们在前文阐述过，这些字符串本身保存在 .strtab中。这样来看 .strtab和 .shstrtab的地位是等同的，差别是前者保存程序中用到的符号，而后者保存Section名称。<br>其实，ELF格式提供了两种不同的视角，链接器把ELF文件看成是Section的集合，而加载器把ELF文件看<br>成是Segment的集合。这里以Relocatable 的Section为例带大家分析了ELF的数据存储。大家可以结合可重定位Relocatable 的ELF文件数据存储的形式来了解Executable可执行文件的数据存储形式。而二者的关系可以从下图看出。<br><img src="http://www.itcast.cn/files/image/201512/20151228170509501.png" alt=""><br>左边是从链接器的视角来看ELF文件，开头的ELF Header描述了体系结构和操作系统等基本信息，并指出Section Header Table和Program Header Table在文件中的位置，Program Header Table在链接过程中用不到，所以是可有可无的，Section Header Table中保存了所有Section的描述信息，通过Section Header Table可以找到每个Section在文件中的位置。</p>
+<p>右边是从加载器的视角来看ELF文件，开头是ELF Header，Program Header Table中保存了所有Segment的描述信息，Section Header Table在加载过程中用不到，所以是可有可无的。从上图可以看出，一个Segment由一个或多个Section组成，这些Section加载到内存时具有相同的访问权限，如 .text Section会和 .rodata Section合并为一个Segment，同时分配只读访问权限，而.data Section通常和 .bss Section合并为一个Segment，分配读写权限。</p>
+<p>有些Section只对链接器有意义，在运行时用不到，也不需要加载到内存，那么它可以不属于任何Segment， 如 .rela.text Section 在Executable文件中就消失了。另外，Section Header Table和Program Header Table并不是一定要位于文件的开头和结尾，其位置由ELF Header指出，上图这么画只是为了清晰。目标文件需要链接器做进一步处理，所以一定有Section Header Table；可执行文件需要加载运行，所以一定有Program Header Table；而共享库既要加载运行，又要在加载时做动态链接，所以既有Section Header Table又有Program Header Table。</p>
+<p>作者：传智播客C/C++培训学院<br>首发：<a href="http://www.itcast.cn/c/" target="_blank" rel="external">http://www.itcast.cn/c/</a></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/逆向破解/">逆向破解</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Linux/">Linux</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://spd.dropsec.xyz/2016/08/09/Linux系统可执行文件格式ELF/" data-title="Linux系统可执行文件格式ELF | All Right" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/08/13/增强for可变参数与代码块/" title="增强for可变参数与代码块">
+  <strong>上一篇：</strong><br/>
+  <span>
+  增强for可变参数与代码块</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2016/08/09/6种灵活的寻址方式与其作用/"  title="6种灵活的寻址方式与其作用">
+ <strong>下一篇：</strong><br/> 
+ <span>6种灵活的寻址方式与其作用
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2016/08/09/Linux系统可执行文件格式ELF/" data-title="Linux系统可执行文件格式ELF" data-url="http://spd.dropsec.xyz/2016/08/09/Linux系统可执行文件格式ELF/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ 
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="github-card">
+<p class="asidetitle">Github 名片</p>
+<div class="github-card" data-github="myGoodLuck" data-width="220" data-height="119" data-theme="medium">
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+</div>
+  </div>
+
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Android/" title="Android">Android<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/安全工具/" title="安全工具">安全工具<sup>6</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/漏洞分析/" title="漏洞分析">漏洞分析<sup>14</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/编程技术/" title="编程技术">编程技术<sup>18</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/逆向破解/" title="逆向破解">逆向破解<sup>12</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/CTF/" title="CTF">CTF<sup>11</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Java/" title="Java">Java<sup>8</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Windows/" title="Windows">Windows<sup>6</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Python/" title="Python">Python<sup>5</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Linux/" title="Linux">Linux<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/安全工具开发/" title="安全工具开发">安全工具开发<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/C-C/" title="C/C++">C/C++<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ROP/" title="ROP">ROP<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Android逆向/" title="Android逆向">Android逆向<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Ret2reg/" title="Ret2reg">Ret2reg<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Docker/" title="Docker">Docker<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Stack-smashing-Protection/" title="Stack-smashing-Protection">Stack-smashing-Protection<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/竞争条件漏洞/" title="竞争条件漏洞">竞争条件漏洞<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/密码学/" title="密码学">密码学<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/IDA/" title="IDA">IDA<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/免杀/" title="免杀">免杀<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/X86汇编/" title="X86汇编">X86汇编<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Android-Hook/" title="Android Hook">Android Hook<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/符号执行/" title="符号执行">符号执行<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://bbs.pediy.com/" target="_blank" title="看雪论坛">看雪论坛</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.52pojie.cn/" target="_blank" title="吾爱破解">吾爱破解</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.freebuf.com/" target="_blank" title="Freebuf">Freebuf</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://bobao.360.cn/" target="_blank" title="安全客">安全客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://wobushi.cn/" target="_blank" title="Vam博客">Vam博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://www.sec-wiki.com/index.php" target="_blank" title="SecWiki">SecWiki</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://jaq.alibaba.com/community/index" target="_blank" title="阿里聚安全">阿里聚安全</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.droidsec.cn/" target="_blank" title="Android安全中文站">Android安全中文站</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.dropsec.xyz" target="_blank" title="Drops团队主页">Drops团队主页</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://139.129.36.207:8080/" target="_blank" title="Drops攻防平台">Drops攻防平台</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=null&verifier=&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m All Right. <br/>
+			I like reverse cracking and vulnerability mining.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/u/3935817858?refer_flag=1001030102_&amp;is_all=1" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/myGoodLuck" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		<a href="https://twitter.com/https://twitter.com/" target="_blank" class="icon-twitter" title="twitter"></a>
+		
+		
+		
+		
+		
+		
+		
+		<a href="mailto:spd1234@foxmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a>  © 2017 
+		
+		<a href="/about" target="_blank" title="All Right">All Right</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"hexo-next"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?19fc2bc0462099cb39127e61934055ec";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

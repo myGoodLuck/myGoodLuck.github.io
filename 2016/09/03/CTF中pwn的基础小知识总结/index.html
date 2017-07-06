@@ -1,0 +1,683 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>CTF中pwn的基础小知识总结 | All Right</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="All Right">
+    
+
+    
+    <meta name="description" content="知识点一Linux管道Linux管道可以将一个进程的标准输出作为另一个进程的标准输入，管道的操作符号为“|”，比如ls命令可用于查看当前目录下的文件列表，而grep命 令可用于匹配特定的字符，因此ls | grep test命令可用于列出当前目录下文件名包含test的文件。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CTF中pwn的基础小知识总结">
+<meta property="og:url" content="http://spd.dropsec.xyz/2016/09/03/CTF中pwn的基础小知识总结/index.html">
+<meta property="og:site_name" content="All Right">
+<meta property="og:description" content="知识点一Linux管道Linux管道可以将一个进程的标准输出作为另一个进程的标准输入，管道的操作符号为“|”，比如ls命令可用于查看当前目录下的文件列表，而grep命 令可用于匹配特定的字符，因此ls | grep test命令可用于列出当前目录下文件名包含test的文件。">
+<meta property="og:image" content="http://obmugrq95.bkt.clouddn.com/%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8.png">
+<meta property="og:image" content="http://obmugrq95.bkt.clouddn.com/%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA.png">
+<meta property="og:updated_time" content="2017-04-07T08:55:15.224Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CTF中pwn的基础小知识总结">
+<meta name="twitter:description" content="知识点一Linux管道Linux管道可以将一个进程的标准输出作为另一个进程的标准输入，管道的操作符号为“|”，比如ls命令可用于查看当前目录下的文件列表，而grep命 令可用于匹配特定的字符，因此ls | grep test命令可用于列出当前目录下文件名包含test的文件。">
+<meta name="twitter:image" content="http://obmugrq95.bkt.clouddn.com/%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8.png">
+<meta name="twitter:creator" content="@https://twitter.com/">
+
+    
+    <link rel="alternative" href="/atom.xml" title="All Right" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="All Right" title="All Right"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="All Right">All Right</a></h1>
+				<h2 class="blog-motto">A binary security Porter</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:spd.dropsec.xyz">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/09/03/CTF中pwn的基础小知识总结/" title="CTF中pwn的基础小知识总结" itemprop="url">CTF中pwn的基础小知识总结</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="All Right" target="_blank" itemprop="author">All Right</a>
+		
+  <p class="article-time">
+    <time datetime="2016-09-03T09:24:25.000Z" itemprop="datePublished"> 发表于 2016-09-03</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#知识点一"><span class="toc-number">1.</span> <span class="toc-text">知识点一</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Linux管道"><span class="toc-number">1.1.</span> <span class="toc-text">Linux管道</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#命令行参数"><span class="toc-number">1.2.</span> <span class="toc-text">命令行参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#字节序"><span class="toc-number">1.3.</span> <span class="toc-text">字节序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#环境变量参数"><span class="toc-number">1.4.</span> <span class="toc-text">环境变量参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#objdump使用"><span class="toc-number">1.5.</span> <span class="toc-text">objdump使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#函数指针"><span class="toc-number">1.6.</span> <span class="toc-text">函数指针</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#知识点二"><span class="toc-number">2.</span> <span class="toc-text">知识点二</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#函数调用约定"><span class="toc-number">2.1.</span> <span class="toc-text">函数调用约定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基本的缓冲区溢出攻击模型"><span class="toc-number">2.2.</span> <span class="toc-text">基本的缓冲区溢出攻击模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Shellcode"><span class="toc-number">2.3.</span> <span class="toc-text">Shellcode</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#builtin-return-address函数"><span class="toc-number">2.4.</span> <span class="toc-text">__builtin_return_address函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#理解多层跳转"><span class="toc-number">2.5.</span> <span class="toc-text">理解多层跳转</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#strdup函数"><span class="toc-number">2.6.</span> <span class="toc-text">strdup函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#grep命令"><span class="toc-number">2.7.</span> <span class="toc-text">grep命令</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#知识点三"><span class="toc-number">3.</span> <span class="toc-text">知识点三</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#checksec脚本"><span class="toc-number">3.1.</span> <span class="toc-text">checksec脚本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#栈帧"><span class="toc-number">3.2.</span> <span class="toc-text">栈帧</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NX选项"><span class="toc-number">3.3.</span> <span class="toc-text">NX选项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GOT和PLT"><span class="toc-number">3.4.</span> <span class="toc-text">ＧＯＴ和ＰＬＴ</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#信息泄露的实现"><span class="toc-number">3.5.</span> <span class="toc-text">信息泄露的实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#libc-so-6文件的作用"><span class="toc-number">3.6.</span> <span class="toc-text">libc.so.6文件的作用</span></a></li></ol></li></ol>
+		
+		</div>
+		
+		<h2 id="知识点一"><a href="#知识点一" class="headerlink" title="知识点一"></a>知识点一</h2><h3 id="Linux管道"><a href="#Linux管道" class="headerlink" title="Linux管道"></a>Linux管道</h3><p>Linux管道可以将一个进程的标准输出作为另一个进程的标准输入，管道的操作符号为“|”，比如ls命令可用于查看当前目录下的文件列表，而grep命 令可用于匹配特定的字符，因此ls | grep test命令可用于列出当前目录下文件名包含test的文件。<br><a id="more"></a></p>
+<h3 id="命令行参数"><a href="#命令行参数" class="headerlink" title="命令行参数"></a>命令行参数</h3><p>C语言的main函数拥有两个参数，为int类型的argc参数，以及char**类型argv参数。其中argc参数的值表示命令行参数的个数，而argv则指向一个字符串数组，该数组存储了具体的命令行参数的内容。注意程序本身的名字为命令行的第一个参数。<br>打印命令行参数信息的示例代码<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span> i;</div><div class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; argc; ++i)</div><div class="line">    &#123;</div><div class="line">        <span class="built_in">printf</span>(<span class="string">"argv[%d] = %s\n"</span>, i, argv[i]);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Linux的xargs命令可以将输入数据当做命令行参数传给指定的程序。比如执行命令python -c “print ‘AAA BBB CCC’” | xargs ./test</p>
+<h3 id="字节序"><a href="#字节序" class="headerlink" title="字节序"></a>字节序</h3><p>字节顺序，又称端序或尾序（英语：Endianness）。对于内存中存储的0x11223344这样一个值，从低地址往高地址方向的每一个字节来看，其内容在内存里的分布可能为0x11,0x22,0x33,0x44，也可能为0x44,0x33,0x22,0x11.即大端格式和小端格式。</p>
+<h3 id="环境变量参数"><a href="#环境变量参数" class="headerlink" title="环境变量参数"></a>环境变量参数</h3><p>在Linux/Windows操作系统中, 每个进程都有其各自的环境变量设置。 缺省情况下, 当一个进程被创建时，除了创建过程中的明确更改外，它继承了其父进程的绝大部分环境变量信息。<br>扩展的C语言main函数可以传递三个参数，除了argc和argv参数外，还能接受一个char**类型的envp参数。envp指向一个字符串数组，该数组存储了当前进程具体的环境变量的内容，envp的最后一个元素指向NULL，此为envp结束的标识符。<br>打印环境变量参数信息的示例代码<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc,<span class="keyword">char</span>** argv,<span class="keyword">char</span>** envp)</span></span></div><div class="line">&#123;</div><div class="line">   <span class="keyword">int</span> i =<span class="number">0</span>;</div><div class="line">   <span class="keyword">while</span>(envp[i])</div><div class="line">    &#123;</div><div class="line">        <span class="built_in">printf</span>(<span class="string">"envp[%2d] = %s\n"</span>, i, envp[i]);</div><div class="line">        i +=<span class="number">1</span>;</div><div class="line">    &#125;</div><div class="line">   return0;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>环境变量的格式为：环境变量名=环境变量值。<br>当父进程启动一个子进程时，子进程会继承父进程的换了变量信息。在Linux Shell下，通过export可以给Shell添加一个环境变量，此后通过Shell启动的子进程都会拥有这个环境变量。例如在Shell中执行export testenv=”Hello_World”之后，再执行./test，可以看到新的环境变量已经被子进程继承了。</p>
+<h3 id="objdump使用"><a href="#objdump使用" class="headerlink" title="objdump使用"></a>objdump使用</h3><p>使用objdump工具可以查看一个目标文件的许多内部信息，objdump有许多可选的参数选项，通过控制这些参数选项可以输出不同的文件信息。最常用的就是-d，用来获取二进制程序中代码段的反汇编指令列表，从而获取某一个函数的具体地址信息。</p>
+<h3 id="函数指针"><a href="#函数指针" class="headerlink" title="函数指针"></a>函数指针</h3><p>函数指针（Function Pointer）是指向函数的指针，函数指针可以像一般函数一样，用于调用函数、传递参数。在C /C++这样的语言中，通过提供一个简单的选取、执行函数的方法，函数指针可以简化代码。<br>函数指针只能指向具有特定特征的函数，因而所有被同一指针运用的函数必须具有相同的参数和返回类型。<br>通常使用typedef来定义一个函数指针类型，如：<br><code>typedefvoid(*func)();</code><br>定义了func这样的函数指针类型，其可以指向返回值类型为void且没有函数参数的函数，比如void test()这样的函数，可以使用func myfp = test;来定义一个myfp变量，该变量指向test函数，通过执行myfp()可以达到执行test()函数同样的效果。</p>
+<h2 id="知识点二"><a href="#知识点二" class="headerlink" title="知识点二"></a>知识点二</h2><h3 id="函数调用约定"><a href="#函数调用约定" class="headerlink" title="函数调用约定"></a>函数调用约定</h3><p>函数调用约定描述了函数传递参数的方式和栈协同工作的技术细节，不同的函数调用约定原理基本相同，但在细节上是有差别的，包括函数参数的传递方式、参数的入栈顺序、函数返回时由谁来平衡堆栈扥。这里重点讲解C语言函数调用约定。<br>在gdb中通过disas指令对main函数进行反汇编时，函数的开头和结尾的反汇编指令都是一样的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">push   %ebp</div><div class="line">mov    %esp,%ebp</div><div class="line">......</div><div class="line">leave</div><div class="line">ret</div></pre></td></tr></table></figure></p>
+<ol>
+<li>在函数的开头，首先是一条push %ebp指令，将ebp寄存器压入栈中，用于保存ebp寄存器的值，接着是mov %esp,%ebp将esp寄存器的值传递给ebp寄存器；在函数的末尾，leave指令相当于mov %ebp,%esp和pop %ebp两条指令，其作用刚好与开头的两条指令相反，即恢复esp和ebp寄存器的内容。</li>
+<li><p>如果在函数A中调用了函数B，我们称函数A为主调函数，函数B为被调函数，如果函数B的声明为int B(int arg1, int arg2, int arg3)，那么函数A中的调用函数B时的汇编指令的形式如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">push arg3</div><div class="line">push arg2</div><div class="line">push arg1</div><div class="line">call B</div></pre></td></tr></table></figure>
+</li>
+<li><p>连续三个push将函数的参数按照从右往左的顺序进行压栈，然后执行call B来调用函数B。注意在gdb中看到的效果可能不是三个push，而是三个mov来对栈进行操作，这是因为Linux采用AT&amp;T风格的汇编，而上面的指令使用的是Intel风格的汇编，比较容易理解。<br>call指令的内部细节为：将下一条指令的地址压入栈中，然后跳转到函数B去执行代码。这里说的call下一条指令的地址也就是通常所说的返回地址。函数B最后一条retn指令会从栈上弹出返回地址，并赋值给EIP寄存器，达到返回函数A继续执行的目的。<br><img src="http://obmugrq95.bkt.clouddn.com/%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8.png" alt=""></p>
+</li>
+</ol>
+<h3 id="基本的缓冲区溢出攻击模型"><a href="#基本的缓冲区溢出攻击模型" class="headerlink" title="基本的缓冲区溢出攻击模型"></a>基本的缓冲区溢出攻击模型</h3><p>基本的缓冲区溢出攻击通常是通过改写函数返回地址的形式来发起攻击的。如A调用B函数，正常情况下B函数返回时执行retn指令，从栈上取出返回地址跳转回A函数继续执行代码。而一旦返回地址被缓冲区溢出数据改写，那么我们就可以控制函数B跳转到指定的地方去执行代码了。<br><img src="http://obmugrq95.bkt.clouddn.com/%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA.png" alt=""></p>
+<h3 id="Shellcode"><a href="#Shellcode" class="headerlink" title="Shellcode"></a>Shellcode</h3><p>Shellcode指缓冲区溢出攻击中植入进程的恶意代码，这段代码可以弹出一个消息框，也可以在目标机器上打开一个监听端口，甚至是删除目标机器上的重要文件等。<br>Shellcode通常需要使用汇编语言进行开发，并转换成二进制机器码，其内容和长度经常还会受到很多实际条件的限制，因此开发Shellcode通常都是非常困难的。在实际场景中，我们通常使用Metasploit这个工具来定制各种功能的Shellcode，当然也可以去网上查找一些现有的Shellcode进行测试，通常在shell-storm以及exploit-db等网站上都能找到一些比较成熟和稳定的shellcode，网址为：<br><a href="http://shell-storm.org/shellcode/" target="_blank" rel="external">http://shell-storm.org/shellcode</a></p>
+<p><a href="http://www.exploit-db.com/shellcode/" target="_blank" rel="external">http://www.exploit-db.com/shellcode</a></p>
+<h3 id="builtin-return-address函数"><a href="#builtin-return-address函数" class="headerlink" title="__builtin_return_address函数"></a>__builtin_return_address函数</h3><p><strong>builtin_return_address函数接收一个参数，可以是0,1,2等。</strong>builtin_return_address(0)返回当前函数的返回地址，如果参数增大1，那么就往上走一层获取主调函数的返回地址。</p>
+<h3 id="理解多层跳转"><a href="#理解多层跳转" class="headerlink" title="理解多层跳转"></a>理解多层跳转</h3><p>retn指令从栈顶弹出一个数据并赋值给EIP寄存器，程序继续执行时就相当于跳转到这个地址去执行代码了。<br>如果我们将返回地址覆盖为一条retn指令的地址，那么就又可以执行一条retn指令了，相当于再在栈顶弹出一个数据赋值给EIP寄存器。</p>
+<h3 id="strdup函数"><a href="#strdup函数" class="headerlink" title="strdup函数"></a>strdup函数</h3><p>strdup可以用于复制一个字符串，我们通常使用字符串时会使用strcpy，而strdup只接受一个参数，也就是要复制的字符串的地址，strdup()会先用maolloc()配置与参数字符串相同大小的的空间，然后将参数字符串的内容复制到该内存地址，然后把该地址返回。strdup返回的地址最后可以利用free()来释放。</p>
+<h3 id="grep命令"><a href="#grep命令" class="headerlink" title="grep命令"></a>grep命令</h3><p>当输出信息非常多的时候，我们很难快速找到我们感兴趣的信息。使用grep命令可以对匹配特定正则表达式的文本进行搜索，并只输出匹配的行或文本。<br>我们可以使用管道将一个程序的输出当做grep的输入数据，grep会根据给定的正则表达式参数对输入数据进行过滤。<br>对于grep的参数需要注意这样一个问题：当参数中存在空格时需要用双引号将参数包裹起来，此外，<em>是正则表达式里面的通配符，如果要查找</em>，需要使用反斜杠进行转移，即*。例如，如果我们要查找call <em>%eax，在shell中执行objdump -d pwn| grep “call </em>*%eax”即可。</p>
+<h2 id="知识点三"><a href="#知识点三" class="headerlink" title="知识点三"></a>知识点三</h2><h3 id="checksec脚本"><a href="#checksec脚本" class="headerlink" title="checksec脚本"></a>checksec脚本</h3><p>操作系统提供了许多安全机制来尝试降低或阻止缓冲区溢出攻击带来的安全风险，包括DEP、ASLR等。在编写漏洞利用代码的时候，需要特别注意目标进程是否开启了DEP（Linux下对应NX）、ASLR（Linux下对应PIE）等机制，例如存在DEP（NX）的话就不能直接执行栈上的数据，存在ASLR的话各个系统调用的地址就是随机化的。<br>使用checksec.sh脚本可以方便的查看可执行程序是否启用了这些安全机制。例如：在shell中执行./checksec.h —file test<br>checksec脚本的下载地址为:<br><a href="http://www.trapkit.de/tools/checksec.html" target="_blank" rel="external">http://www.trapkit.de/tools/checksec.html</a></p>
+<h3 id="栈帧"><a href="#栈帧" class="headerlink" title="栈帧"></a>栈帧</h3><p>在高级语言中，当函数被调用时，系统栈会为这个函数开辟一个栈帧，并把它压入到栈里面。新开辟的栈帧中的空间被它所属的函数所独占，当函数返回的时候，系统栈会清理该函数所对应的栈帧以回收栈上的内存空间。<br>每个函数都拥有自己独占的栈帧空间，有两个特殊的寄存器用于标识栈帧的相关参数：</p>
+<ol>
+<li>ESP寄存器，永远指向栈帧的顶端；</li>
+<li>EBP寄存器，永远指向栈帧的底部；</li>
+</ol>
+<p>在调用一个函数的时候，函数所需要的参数首先会依次被压入的栈上，其次压入对应的返回地址，最后跳转到被调用的函数执行代码并开辟新的栈帧。新的栈帧的底部保存有EBP寄存器的值，基于EBP寄存器可以获取到被调用函数所需要的参数信息。</p>
+<h3 id="NX选项"><a href="#NX选项" class="headerlink" title="NX选项"></a>NX选项</h3><p>NX即No-eXecute（不可执行）的意思，NX选项会将进程特殊区域的内存标记为不可执行，当CPU跳转到这些区域执行代码的时候便会产生异常，以阻止缓冲区溢出时直接在栈上执行恶意代码。<br>gcc编译器默认开启了NX选项，如果需要关闭NX选项，可以给gcc编译器添加-z execstack参数。在Windows下，类似的概念为DEP（Data Execution Prevention，数据执行保护），在最新版的Visual Studio中默认开启了DEP编译选项。</p>
+<h3 id="GOT和PLT"><a href="#GOT和PLT" class="headerlink" title="ＧＯＴ和ＰＬＴ"></a>ＧＯＴ和ＰＬＴ</h3><p>GOT（Global Offset Table，全局偏移表）是Linux ELF文件中用于定位全局变量和函数的一个表。PLT（Procedure Linkage Table，过程链接表）是Linux ELF文件中用于延迟绑定的表，即函数第一次被调用的时候才进行绑定。<br>所谓延迟绑定，就是当函数第一次被调用的时候才进行绑定（包括符号查找、重定位等），如果函数从来没有用到过就不进行绑定。基于延迟绑定可以大大加快程序的启动速度，特别有利于一些引用了大量函数的程序。打个比方，你一次性去超市买了一大堆物品，但是其中有些物品可能你永远也不会使用，这样就浪费了钱财；而延迟绑定就相当于需要的时候才去超市买东西，这样就节省了开支。<br>下面简单介绍一下延迟绑定的基本原理。假如存在一个bar函数，这个函数在PLT中的条目为bar@plt，在GOT中的条目为bar@got，那么在第一次调用bar函数的时候，首先会跳转到PLT，伪代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">bar@plt:</div><div class="line"></div><div class="line">jmp bar@got</div><div class="line"></div><div class="line">patch bar@got</div></pre></td></tr></table></figure></p>
+<p>这里会从PLT跳转到GOT，如果函数从来没有调用过，那么这时候GOT会跳转回PLT并调用patch bar@got，这一行代码的作用是将bar函数真正的地址填充到bar@got，然后跳转到bar函数真正的地址执行代码。当我们下次再调用bar函数的时候，执行路径就是先后跳转到bar@plt、bar@got、bar真正的地址。</p>
+<h3 id="信息泄露的实现"><a href="#信息泄露的实现" class="headerlink" title="信息泄露的实现"></a>信息泄露的实现</h3><p>在进行缓冲区溢出攻击的时候，如果我们将EIP跳转到write函数执行，并且在栈上安排和write相关的参数，就可以泄漏指定内存地址上的内容。比如我们可以将某一个函数的GOT条目的地址传给write函数，就可以泄漏这个函数在进程空间中的真实地址。<br>如果泄漏一个系统调用的内存地址，结合libc.so.6文件，我们就可以推算出其他系统调用（比如system）的地址。</p>
+<h3 id="libc-so-6文件的作用"><a href="#libc-so-6文件的作用" class="headerlink" title="libc.so.6文件的作用"></a>libc.so.6文件的作用</h3><p>在一些CTF的PWN题目中，经常可以看到题目除了提供ELF文件之外还提供了一个libc.so.6文件，那么这个额外提供的文件到底有什么用呢？<br>如果我们可以利用目标程序的漏洞来泄漏某一个函数的地址，那么我们就可以计算出system函数的地址了，当然，被泄露地址的函数必须也定义在libc.so.6中（libc.so.6中通常也存在有/bin/bash或者/bin/sh这个字符串）。<br>计算system函数地址的基本原理是，在libc.so.6中，各个函数的相对地址是固定的，比如函数A相对于libc.so.6的起始地址为addr_A，函数B相对于libc.so.6的起始地址为addr_B，那么，如果我们能够泄漏进程内存空间中函数A的地址address_A，那么函数B在进程空间中的地址就可以计算出来了，为address_A + addr_B - addr_A。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/漏洞分析/">漏洞分析</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Linux/">Linux</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://spd.dropsec.xyz/2016/09/03/CTF中pwn的基础小知识总结/" data-title="CTF中pwn的基础小知识总结 | All Right" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/09/18/Java中的内部类/" title="Java中的内部类">
+  <strong>上一篇：</strong><br/>
+  <span>
+  Java中的内部类</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2016/09/03/C-中的rand函数和srand函数/"  title="C++中的rand函数和srand函数">
+ <strong>下一篇：</strong><br/> 
+ <span>C++中的rand函数和srand函数
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2016/09/03/CTF中pwn的基础小知识总结/" data-title="CTF中pwn的基础小知识总结" data-url="http://spd.dropsec.xyz/2016/09/03/CTF中pwn的基础小知识总结/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#知识点一"><span class="toc-number">1.</span> <span class="toc-text">知识点一</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Linux管道"><span class="toc-number">1.1.</span> <span class="toc-text">Linux管道</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#命令行参数"><span class="toc-number">1.2.</span> <span class="toc-text">命令行参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#字节序"><span class="toc-number">1.3.</span> <span class="toc-text">字节序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#环境变量参数"><span class="toc-number">1.4.</span> <span class="toc-text">环境变量参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#objdump使用"><span class="toc-number">1.5.</span> <span class="toc-text">objdump使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#函数指针"><span class="toc-number">1.6.</span> <span class="toc-text">函数指针</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#知识点二"><span class="toc-number">2.</span> <span class="toc-text">知识点二</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#函数调用约定"><span class="toc-number">2.1.</span> <span class="toc-text">函数调用约定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基本的缓冲区溢出攻击模型"><span class="toc-number">2.2.</span> <span class="toc-text">基本的缓冲区溢出攻击模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Shellcode"><span class="toc-number">2.3.</span> <span class="toc-text">Shellcode</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#builtin-return-address函数"><span class="toc-number">2.4.</span> <span class="toc-text">__builtin_return_address函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#理解多层跳转"><span class="toc-number">2.5.</span> <span class="toc-text">理解多层跳转</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#strdup函数"><span class="toc-number">2.6.</span> <span class="toc-text">strdup函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#grep命令"><span class="toc-number">2.7.</span> <span class="toc-text">grep命令</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#知识点三"><span class="toc-number">3.</span> <span class="toc-text">知识点三</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#checksec脚本"><span class="toc-number">3.1.</span> <span class="toc-text">checksec脚本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#栈帧"><span class="toc-number">3.2.</span> <span class="toc-text">栈帧</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NX选项"><span class="toc-number">3.3.</span> <span class="toc-text">NX选项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GOT和PLT"><span class="toc-number">3.4.</span> <span class="toc-text">ＧＯＴ和ＰＬＴ</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#信息泄露的实现"><span class="toc-number">3.5.</span> <span class="toc-text">信息泄露的实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#libc-so-6文件的作用"><span class="toc-number">3.6.</span> <span class="toc-text">libc.so.6文件的作用</span></a></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="github-card">
+<p class="asidetitle">Github 名片</p>
+<div class="github-card" data-github="myGoodLuck" data-width="220" data-height="119" data-theme="medium">
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+</div>
+  </div>
+
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Android/" title="Android">Android<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/安全工具/" title="安全工具">安全工具<sup>6</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/漏洞分析/" title="漏洞分析">漏洞分析<sup>14</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/编程技术/" title="编程技术">编程技术<sup>18</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/逆向破解/" title="逆向破解">逆向破解<sup>12</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/CTF/" title="CTF">CTF<sup>11</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Java/" title="Java">Java<sup>8</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Windows/" title="Windows">Windows<sup>6</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Python/" title="Python">Python<sup>5</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Linux/" title="Linux">Linux<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/安全工具开发/" title="安全工具开发">安全工具开发<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/C-C/" title="C/C++">C/C++<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ROP/" title="ROP">ROP<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Android逆向/" title="Android逆向">Android逆向<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Ret2reg/" title="Ret2reg">Ret2reg<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Docker/" title="Docker">Docker<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Stack-smashing-Protection/" title="Stack-smashing-Protection">Stack-smashing-Protection<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/竞争条件漏洞/" title="竞争条件漏洞">竞争条件漏洞<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/密码学/" title="密码学">密码学<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/IDA/" title="IDA">IDA<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/免杀/" title="免杀">免杀<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/X86汇编/" title="X86汇编">X86汇编<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Android-Hook/" title="Android Hook">Android Hook<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/符号执行/" title="符号执行">符号执行<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://bbs.pediy.com/" target="_blank" title="看雪论坛">看雪论坛</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.52pojie.cn/" target="_blank" title="吾爱破解">吾爱破解</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.freebuf.com/" target="_blank" title="Freebuf">Freebuf</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://bobao.360.cn/" target="_blank" title="安全客">安全客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://wobushi.cn/" target="_blank" title="Vam博客">Vam博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://www.sec-wiki.com/index.php" target="_blank" title="SecWiki">SecWiki</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://jaq.alibaba.com/community/index" target="_blank" title="阿里聚安全">阿里聚安全</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.droidsec.cn/" target="_blank" title="Android安全中文站">Android安全中文站</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.dropsec.xyz" target="_blank" title="Drops团队主页">Drops团队主页</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://139.129.36.207:8080/" target="_blank" title="Drops攻防平台">Drops攻防平台</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=null&verifier=&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m All Right. <br/>
+			I like reverse cracking and vulnerability mining.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/u/3935817858?refer_flag=1001030102_&amp;is_all=1" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/myGoodLuck" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		<a href="https://twitter.com/https://twitter.com/" target="_blank" class="icon-twitter" title="twitter"></a>
+		
+		
+		
+		
+		
+		
+		
+		<a href="mailto:spd1234@foxmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a>  © 2017 
+		
+		<a href="/about" target="_blank" title="All Right">All Right</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"hexo-next"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?19fc2bc0462099cb39127e61934055ec";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

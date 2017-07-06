@@ -1,0 +1,657 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Java基础之13个Java例子 | All Right</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="All Right">
+    
+
+    
+    <meta name="description" content="程序1题目：有1、2、3、4个数字，能组成多少个互不相同且无重复数字的三位数？都是多少？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java基础之13个Java例子">
+<meta property="og:url" content="http://spd.dropsec.xyz/2016/09/18/Java基础之13个Java例子/index.html">
+<meta property="og:site_name" content="All Right">
+<meta property="og:description" content="程序1题目：有1、2、3、4个数字，能组成多少个互不相同且无重复数字的三位数？都是多少？">
+<meta property="og:updated_time" content="2017-04-07T09:02:50.097Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java基础之13个Java例子">
+<meta name="twitter:description" content="程序1题目：有1、2、3、4个数字，能组成多少个互不相同且无重复数字的三位数？都是多少？">
+<meta name="twitter:creator" content="@https://twitter.com/">
+
+    
+    <link rel="alternative" href="/atom.xml" title="All Right" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="All Right" title="All Right"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="All Right">All Right</a></h1>
+				<h2 class="blog-motto">A binary security Porter</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:spd.dropsec.xyz">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/09/18/Java基础之13个Java例子/" title="Java基础之13个Java例子" itemprop="url">Java基础之13个Java例子</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="All Right" target="_blank" itemprop="author">All Right</a>
+		
+  <p class="article-time">
+    <time datetime="2016-09-18T12:48:07.000Z" itemprop="datePublished"> 发表于 2016-09-18</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#程序1"><span class="toc-number">1.</span> <span class="toc-text">程序1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序2"><span class="toc-number">2.</span> <span class="toc-text">程序2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序3"><span class="toc-number">3.</span> <span class="toc-text">程序3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序4"><span class="toc-number">4.</span> <span class="toc-text">程序4</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序5"><span class="toc-number">5.</span> <span class="toc-text">程序5</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序6"><span class="toc-number">6.</span> <span class="toc-text">程序6</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序7"><span class="toc-number">7.</span> <span class="toc-text">程序7</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序8"><span class="toc-number">8.</span> <span class="toc-text">程序8</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序9"><span class="toc-number">9.</span> <span class="toc-text">程序9</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序10"><span class="toc-number">10.</span> <span class="toc-text">程序10</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序11"><span class="toc-number">11.</span> <span class="toc-text">程序11</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序12"><span class="toc-number">12.</span> <span class="toc-text">程序12</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序13"><span class="toc-number">13.</span> <span class="toc-text">程序13</span></a></li></ol>
+		
+		</div>
+		
+		<h3 id="程序1"><a href="#程序1" class="headerlink" title="程序1"></a>程序1</h3><p>题目：有1、2、3、4个数字，能组成多少个互不相同且无重复数字的三位数？都是多少？<br><a id="more"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">public class Test1 &#123;</div><div class="line">    public static void main(String[] args)&#123;</div><div class="line">        int i,j,k;</div><div class="line">        for(i=1;i&lt;5;i++)&#123;</div><div class="line">            for(j=1;j&lt;5;j++)&#123;</div><div class="line">                for(k=1;k&lt;5;k++)&#123;</div><div class="line">                    if(i!=k&amp;&amp;i!=j&amp;&amp;k!=j)&#123;</div><div class="line">                        System.out.println(i+&quot;&quot;+j+&quot;&quot;+k);</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="程序2"><a href="#程序2" class="headerlink" title="程序2"></a>程序2</h3><p>题目：企业发放的奖金根据利润提成。利润(i)低于或等于10万元时，奖金可提10%；利润高<br>于10万元，低于20万元时，低于10万元的部分按10%提成，高于10万元的部分，可可提<br>成7.5%；20万到40万之间时，高于20万元的部分，可提成5%；40万到60万之间时高于<br>40万元的部分，可提成3%；60万到100万之间时，高于60万元的部分，可提成1.5%，高于<br>100万元时，超过100万元的部分按1%提成，从键盘输入当月利润i，求应发放奖金总数？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">import java.util.Scanner;</div><div class="line">public class Test2 &#123;</div><div class="line">    public static void main(String[] args)&#123;</div><div class="line"></div><div class="line">        double bonus1,bonus2,bonus4,bonus6,bonus10,bonus11;</div><div class="line">        System.out.println(&quot;输入奖金数(万)：&quot;);</div><div class="line">        Scanner in = new Scanner(System.in);</div><div class="line">         int p = in.nextInt();</div><div class="line">            bonus1 = p*0.1;</div><div class="line">            bonus2 = bonus1+(p-10)*0.75;</div><div class="line">            bonus4 = bonus2+(p-20)*0.5;</div><div class="line">            bonus6 = bonus4+(p-40)*0.3;</div><div class="line">            bonus10 = bonus6+(p-60)*0.15;</div><div class="line">            bonus11 = bonus10+(p-100)*0.1;</div><div class="line">        if(p&lt;10)&#123;</div><div class="line">            System.out.println(&quot;应发放的奖金为（万）：&quot;+bonus1);</div><div class="line">        &#125;</div><div class="line">        else if(10&lt;p&amp;&amp;p&lt;20)&#123;</div><div class="line">            System.out.println(&quot;应发放的奖金为（万）：&quot;+bonus2);</div><div class="line">        &#125;</div><div class="line">        else if(20&lt;p&amp;&amp;p&lt;40)&#123;</div><div class="line">            System.out.println(&quot;应发放的奖金为（万）：&quot;+bonus4);</div><div class="line">        &#125;</div><div class="line">        else if(40&lt;p&amp;&amp;p&lt;60)&#123;</div><div class="line">            System.out.println(&quot;应发放的奖金为（万）：&quot;+bonus6);</div><div class="line">        &#125;</div><div class="line">        else if(60&lt;p&amp;&amp;p&lt;100)&#123;</div><div class="line">            System.out.println(&quot;应发放的奖金为（万）：&quot;+bonus10);</div><div class="line">        &#125;</div><div class="line">        else &#123;</div><div class="line">            System.out.println(&quot;应发放的奖金为（万）：&quot;+bonus11);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="程序3"><a href="#程序3" class="headerlink" title="程序3"></a>程序3</h3><p>题目：一个整数，它加上100后是一个完全平方数，再加上168又是一个完全平方数，请问该数是多少？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">import java.lang.Math;</div><div class="line">public class Test3 &#123;</div><div class="line">    public static void main(String[] args)&#123;</div><div class="line">        int i;</div><div class="line">        double x,y,z;</div><div class="line">        for(i=0;i&lt;100000;i++)&#123;</div><div class="line">            x = Math.sqrt(i+100);</div><div class="line">            y = Math.sqrt(i+268);</div><div class="line">            if(x*x==i+100&amp;&amp;y*y==i+268)&#123;</div><div class="line">                System.out.println(&quot;0-100000的完全平方数有&quot;+i);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="程序4"><a href="#程序4" class="headerlink" title="程序4"></a>程序4</h3><p>题目：输入某年某月某日，判断这一天是这一年的第几天？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">import java.util.Scanner;</div><div class="line">public class Test4 &#123;</div><div class="line">    public static void main(String[] args)&#123;</div><div class="line">        int sum=0,leap;</div><div class="line">        System.out.println(&quot;please input year,month,day&quot;);</div><div class="line">        Scanner in = new Scanner(System.in);</div><div class="line">        int year = in.nextInt();</div><div class="line">        int month = in.nextInt();</div><div class="line">        int day = in.nextInt();</div><div class="line">        switch(month)&#123;</div><div class="line">            case 1: sum = 0;break;</div><div class="line">            case 2: sum = 31;break;</div><div class="line">            case 3: sum = 59;break;</div><div class="line">            case 4: sum = 90;break;</div><div class="line">            case 5: sum = 120;break;</div><div class="line">            case 6: sum = 151;break;</div><div class="line">            case 7: sum = 181;break;</div><div class="line">            case 8: sum = 212;break;</div><div class="line">            case 9: sum = 243;break;</div><div class="line">            case 10: sum = 273;break;</div><div class="line">            case 11: sum = 304;break;</div><div class="line">            case 12: sum = 334;break;</div><div class="line">            default:System.out.println(&quot;data error&quot;);break;</div><div class="line">        &#125;</div><div class="line">        sum +=day;</div><div class="line">        if(year%400==0&amp;&amp;year%100!=0)&#123;</div><div class="line">            leap = 1;</div><div class="line">        &#125;</div><div class="line">        else &#123;</div><div class="line">            leap = 0;</div><div class="line">        &#125;</div><div class="line">        if(leap==1&amp;&amp;month&gt;2)&#123;</div><div class="line">            sum++;</div><div class="line">        &#125;</div><div class="line">        System.out.println(&quot;it is the&quot;+&quot; &quot;+sum+&quot;th &quot;+&quot;day&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="程序5"><a href="#程序5" class="headerlink" title="程序5"></a>程序5</h3><p>题目：输入三个整数x,y,z，请把这三个数由小到大输出。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">import java.util.Scanner;</div><div class="line">public class Test5 &#123;</div><div class="line">    public static void main(String[] args)&#123;</div><div class="line">        int t;</div><div class="line">        System.out.println(&quot;please input three number:&quot;);</div><div class="line">        Scanner in =new Scanner(System.in);</div><div class="line">        int x = in.nextInt();</div><div class="line">        int y = in.nextInt();</div><div class="line">        int z = in.nextInt();</div><div class="line">        if(x&gt;y)&#123;</div><div class="line">            t=x;x=y;y=t;</div><div class="line">        &#125;</div><div class="line">        if(x&gt;z)&#123;</div><div class="line">            t=x;x=z;z=t;</div><div class="line">        &#125;</div><div class="line">        if(y&gt;z)&#123;</div><div class="line">            t=y;y=t;z=t;</div><div class="line">        &#125;</div><div class="line">        System.out.println(&quot;small to big：&quot;+x+&quot; &quot;+y+&quot; &quot;+z);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="程序6"><a href="#程序6" class="headerlink" title="程序6"></a>程序6</h3><p>题目：输出9*9口诀。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public class Test6 &#123;</div><div class="line">    public static void main(String[] args)&#123;</div><div class="line">        int i,j,k;</div><div class="line">        for(i=1;i&lt;=9;i++)&#123;</div><div class="line">            for(j=1;j&lt;=i;j++)&#123;</div><div class="line">                System.out.printf(i+&quot;*&quot;+j+&quot;=&quot;+i*j+&quot;\t&quot;);</div><div class="line">            &#125;</div><div class="line">           System.out.println();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="程序7"><a href="#程序7" class="headerlink" title="程序7"></a>程序7</h3><p>题目：古典问题：有一对兔子，从出生后第3个月起每个月都生一对兔子，小兔子长到第三个月后每个月又生一对兔子，假如兔子都不死，问每个月的兔子总数为多少？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">public class Test7 &#123;</div><div class="line">    public static void main(String[] args) &#123;</div><div class="line"></div><div class="line">        long f1=1,f2=1;</div><div class="line">        int i;</div><div class="line">        for(i=1;i&lt;=20;i++)&#123;</div><div class="line">            System.out.println(f1);</div><div class="line">            System.out.println(f2);</div><div class="line">            f1 = f1+f2;</div><div class="line">            f2 = f1+f2;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="程序8"><a href="#程序8" class="headerlink" title="程序8"></a>程序8</h3><p>题目：判断101-200之间有多少个素数，并输出所有素数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">import java.lang.Math;</div><div class="line">public class Test8 &#123;</div><div class="line">    public static void main(String[] args)&#123;</div><div class="line">        int count = 0;</div><div class="line">        boolean b = false;</div><div class="line">        for(int i = 101;i&lt;200;i++)&#123;</div><div class="line">            for(int j=2;j&lt;=Math.sqrt(i);j++)&#123;</div><div class="line">                if(i%j==0)&#123;</div><div class="line">                    b=false;break;</div><div class="line">                &#125;</div><div class="line">                else &#123;</div><div class="line">                    b=true;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            if(b==true)&#123;</div><div class="line">                count++;</div><div class="line">                System.out.println(i);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">         System.out.println(&quot;素数的个数为：&quot;+count);</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="程序9"><a href="#程序9" class="headerlink" title="程序9"></a>程序9</h3><p>题目：打印出所有的“水仙花数”，所谓“水仙花数”是指一个三位数，其各位数字立方和等于该数本身。例如：153是一个“水仙花数”，因为153=1的三次方＋5的三次方＋3的三次方。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">public class Test9 &#123;</div><div class="line">    public static void main(String[] args)&#123;</div><div class="line">        int i,j,k,n;</div><div class="line">        for(n=100;n&lt;1000;n++)&#123;</div><div class="line">            i = n/100;</div><div class="line">            j = n/10%10;</div><div class="line">            k = n%10;</div><div class="line">            if(i*i*i+j*j*j+k*k*k==i*100+j*10+k)&#123;</div><div class="line">                System.out.println(n);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="程序10"><a href="#程序10" class="headerlink" title="程序10"></a>程序10</h3><p>题目：将一个正整数分解质因数。例如：输入90,打印出90=2<em>3</em>3*5。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">import java.util.Scanner;</div><div class="line">public class Test10 &#123;</div><div class="line">    public static void main(String[] args)&#123;</div><div class="line"></div><div class="line">        primeFactor();</div><div class="line">    &#125;</div><div class="line">    public static void primeFactor()&#123;</div><div class="line">        Scanner scan = new Scanner(System.in);</div><div class="line">        System.out.println(&quot;请输入一个整数：&quot;);</div><div class="line">        int num = scan.nextInt();</div><div class="line">        if(num&lt;2)&#123;</div><div class="line">            System.out.println(&quot;必须输入不小于2的数！&quot;);</div><div class="line">        &#125;else &#123;</div><div class="line">            int primeNumber = 2;</div><div class="line">            System.out.print(num+&quot;=&quot;);</div><div class="line">            while(primeNumber&lt;=num)&#123;</div><div class="line">                if(primeNumber==num)&#123;</div><div class="line">                    System.out.println(num);</div><div class="line">                    break;</div><div class="line">                &#125;else if(num % primeNumber==0)&#123;</div><div class="line"></div><div class="line">                    System.out.print(primeNumber+&quot;*&quot;);</div><div class="line">                    num = num / primeNumber;</div><div class="line">                &#125;else &#123;</div><div class="line">                    primeNumber++;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="程序11"><a href="#程序11" class="headerlink" title="程序11"></a>程序11</h3><p>题目：利用条件运算符的嵌套来完成此题：学习成绩&gt;=90分的同学用a表示，60-89分之间的用b表示，60分以下的用c表示。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">import java.util.Scanner;</div><div class="line">public class Test11 &#123;</div><div class="line">    public static void main(String[] args)&#123;</div><div class="line"></div><div class="line">        Scanner scan = new Scanner(System.in);</div><div class="line">        System.out.println(&quot;please input your score:&quot;);</div><div class="line">        int score = scan.nextInt();</div><div class="line">        if(score&gt;=90)&#123;</div><div class="line">            System.out.println(&quot;a&quot;);</div><div class="line">        &#125;else if(score&gt;=60&amp;&amp;score&lt;90)&#123;</div><div class="line">            System.out.println(&quot;b&quot;);</div><div class="line">        &#125;else &#123;</div><div class="line">            System.out.println(&quot;c&quot;);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="程序12"><a href="#程序12" class="headerlink" title="程序12"></a>程序12</h3><p>题目：输入两个正整数m和n，求其最大公约数和最小公倍数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">import java.util.Scanner;</div><div class="line">public class Test12 &#123;</div><div class="line">    public static void main(String[] args)&#123;</div><div class="line">        int a,b,num1,num2,resd;</div><div class="line">        Scanner scan = new Scanner(System.in);</div><div class="line">        System.out.println(&quot;please input two numbers:&quot;);</div><div class="line">        num1 = scan.nextInt();</div><div class="line">        num2 = scan.nextInt();</div><div class="line">        if(num1&lt;num2)&#123;</div><div class="line">            a = num2;</div><div class="line">            b = num1;</div><div class="line">        &#125;else&#123;</div><div class="line">            a = num1;</div><div class="line">            b = num2;</div><div class="line">        &#125;</div><div class="line">        while (b!=0)&#123;</div><div class="line">            resd = a%b;</div><div class="line">            a = b;</div><div class="line">            b = resd;</div><div class="line">        &#125;</div><div class="line">        System.out.println(&quot;公约数为&quot;+a);</div><div class="line">        System.out.println(&quot;公倍数为&quot;+num1*num2/a);</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="程序13"><a href="#程序13" class="headerlink" title="程序13"></a>程序13</h3><p>题目：输入一行字符，分别统计出其中英文字母、空格、数字和其它字符的个数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">import java.lang.String;</div><div class="line">import java.util.Scanner;</div><div class="line">public class Test13 &#123;</div><div class="line">    public static void main(String[] args)&#123;</div><div class="line"></div><div class="line">        Scanner scan = new Scanner(System.in);</div><div class="line">        System.out.println(&quot;please input your string: &quot;);</div><div class="line">        String a = scan.nextLine();</div><div class="line">        int charCount = 0;</div><div class="line">        int spaceCount = 0;</div><div class="line">        int numberCount = 0;</div><div class="line">        int otherCount = 0;</div><div class="line">        int i;</div><div class="line">        char[] b = a.toCharArray();</div><div class="line">        for(i = 0;i&lt;b.length;i++)&#123;</div><div class="line">            if((b[i]&gt;&apos;a&apos;&amp;&amp;b[i]&lt;&apos;z&apos;)||(b[i]&gt;&apos;A&apos;&amp;&amp;b[i]&lt;&apos;Z&apos;))&#123;</div><div class="line">                charCount++;</div><div class="line">            &#125;else if(b[i]&gt;&apos;0&apos;&amp;&amp;b[i]&lt;&apos;9&apos;)&#123;</div><div class="line">                numberCount++;</div><div class="line">            &#125;else if(b[i]==&apos; &apos;)&#123;</div><div class="line">                spaceCount++;</div><div class="line">            &#125;else &#123;</div><div class="line">                otherCount++;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        System.out.println(&quot;字符串中含有的字母个数为：&quot;+charCount);</div><div class="line">        System.out.println(&quot;字符串中含有的数字个数为：&quot;+numberCount);</div><div class="line">        System.out.println(&quot;字符中含有的空格个数为：&quot;+spaceCount);</div><div class="line">        System.out.println(&quot;字符串中含有的其他字符数为：&quot;+otherCount);</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/编程技术/">编程技术</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java/">Java</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://spd.dropsec.xyz/2016/09/18/Java基础之13个Java例子/" data-title="Java基础之13个Java例子 | All Right" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/09/20/2016华山杯逆向部分writeup/" title="2016华山杯逆向部分writeup">
+  <strong>上一篇：</strong><br/>
+  <span>
+  2016华山杯逆向部分writeup</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2016/09/18/Java中的内部类/"  title="Java中的内部类">
+ <strong>下一篇：</strong><br/> 
+ <span>Java中的内部类
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2016/09/18/Java基础之13个Java例子/" data-title="Java基础之13个Java例子" data-url="http://spd.dropsec.xyz/2016/09/18/Java基础之13个Java例子/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#程序1"><span class="toc-number">1.</span> <span class="toc-text">程序1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序2"><span class="toc-number">2.</span> <span class="toc-text">程序2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序3"><span class="toc-number">3.</span> <span class="toc-text">程序3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序4"><span class="toc-number">4.</span> <span class="toc-text">程序4</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序5"><span class="toc-number">5.</span> <span class="toc-text">程序5</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序6"><span class="toc-number">6.</span> <span class="toc-text">程序6</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序7"><span class="toc-number">7.</span> <span class="toc-text">程序7</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序8"><span class="toc-number">8.</span> <span class="toc-text">程序8</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序9"><span class="toc-number">9.</span> <span class="toc-text">程序9</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序10"><span class="toc-number">10.</span> <span class="toc-text">程序10</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序11"><span class="toc-number">11.</span> <span class="toc-text">程序11</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序12"><span class="toc-number">12.</span> <span class="toc-text">程序12</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序13"><span class="toc-number">13.</span> <span class="toc-text">程序13</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="github-card">
+<p class="asidetitle">Github 名片</p>
+<div class="github-card" data-github="myGoodLuck" data-width="220" data-height="119" data-theme="medium">
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+</div>
+  </div>
+
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Android/" title="Android">Android<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/安全工具/" title="安全工具">安全工具<sup>6</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/漏洞分析/" title="漏洞分析">漏洞分析<sup>14</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/编程技术/" title="编程技术">编程技术<sup>18</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/逆向破解/" title="逆向破解">逆向破解<sup>12</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/CTF/" title="CTF">CTF<sup>11</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Java/" title="Java">Java<sup>8</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Windows/" title="Windows">Windows<sup>6</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Python/" title="Python">Python<sup>5</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Linux/" title="Linux">Linux<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/安全工具开发/" title="安全工具开发">安全工具开发<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/C-C/" title="C/C++">C/C++<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ROP/" title="ROP">ROP<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Android逆向/" title="Android逆向">Android逆向<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Ret2reg/" title="Ret2reg">Ret2reg<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Docker/" title="Docker">Docker<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Stack-smashing-Protection/" title="Stack-smashing-Protection">Stack-smashing-Protection<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/竞争条件漏洞/" title="竞争条件漏洞">竞争条件漏洞<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/密码学/" title="密码学">密码学<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/IDA/" title="IDA">IDA<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/免杀/" title="免杀">免杀<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/X86汇编/" title="X86汇编">X86汇编<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Android-Hook/" title="Android Hook">Android Hook<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/符号执行/" title="符号执行">符号执行<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://bbs.pediy.com/" target="_blank" title="看雪论坛">看雪论坛</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.52pojie.cn/" target="_blank" title="吾爱破解">吾爱破解</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.freebuf.com/" target="_blank" title="Freebuf">Freebuf</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://bobao.360.cn/" target="_blank" title="安全客">安全客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://wobushi.cn/" target="_blank" title="Vam博客">Vam博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://www.sec-wiki.com/index.php" target="_blank" title="SecWiki">SecWiki</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://jaq.alibaba.com/community/index" target="_blank" title="阿里聚安全">阿里聚安全</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.droidsec.cn/" target="_blank" title="Android安全中文站">Android安全中文站</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.dropsec.xyz" target="_blank" title="Drops团队主页">Drops团队主页</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://139.129.36.207:8080/" target="_blank" title="Drops攻防平台">Drops攻防平台</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=null&verifier=&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m All Right. <br/>
+			I like reverse cracking and vulnerability mining.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/u/3935817858?refer_flag=1001030102_&amp;is_all=1" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/myGoodLuck" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		<a href="https://twitter.com/https://twitter.com/" target="_blank" class="icon-twitter" title="twitter"></a>
+		
+		
+		
+		
+		
+		
+		
+		<a href="mailto:spd1234@foxmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a>  © 2017 
+		
+		<a href="/about" target="_blank" title="All Right">All Right</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"hexo-next"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?19fc2bc0462099cb39127e61934055ec";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
